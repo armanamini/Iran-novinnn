@@ -38,10 +38,7 @@ const CampaignFlow = () => {
           if (response.data.data.before_item_flow) {
             setFlow(JSON.parse(response.data.data?.before_item_flow));
 
-            console.log(
-              "flowww",
-              JSON.parse(response.data.data?.before_item_flow)
-            );
+            console.log("flowww", response.data.data);
           } else {
             toast.error("دیتایی وجود ندارد");
           }
@@ -89,7 +86,6 @@ const CampaignFlow = () => {
       ...provided,
       display: "none", // hide the dropdown chevron
     }),
-    
   };
 
   return (
@@ -108,7 +104,7 @@ const CampaignFlow = () => {
             }
 
             return (
-              <div key={item.id} className="w-10/12 pt-10">
+              <div key={item?.id} className="w-10/12 pt-10">
                 <h1 className="mb-4 text-2xl font-bold text-black">
                   {item.name}
                 </h1>
@@ -119,12 +115,12 @@ const CampaignFlow = () => {
                   }}
                 >
                   <div className="flex flex-wrap items-center justify-center pb-4 px-30">
-                    {filteredOptions.map((newItem) =>
+                    {filteredOptions?.map((newItem) =>
                       newItem.map((latestItem) => {
                         console.log("need id", latestItem);
-                        switch (newItemState[latestItem.type_id]) {
+                        switch (newItemState[latestItem?.type_id]) {
                           case "card":
-                            console.log("card", latestItem.options);
+                            console.log("card", latestItem?.options);
                             return (
                               <FlowCard
                                 data={latestItem.options}
@@ -154,8 +150,6 @@ const CampaignFlow = () => {
                               const obj = {
                                 label: element.cfo_name,
                                 value: element.cfo_data,
-                             
-
                               };
                               arr.push(obj);
                               console.log("arr", arr);
@@ -177,10 +171,9 @@ const CampaignFlow = () => {
                                     placeholder="آپشن انتخاب کنید"
                                     onChange={handleSelectChange}
                                     styles={customStyles}
-                                  
                                     components={{
                                       DropdownIndicator: () => null,
-                                    }} 
+                                    }}
                                   />
                                 </div>
                               </div>
@@ -202,22 +195,22 @@ const CampaignFlow = () => {
                     )}
                     {
                       <div className="bg-[#FEF9F9] mt-10 w-full border-[#DC3545] border p-5 px-7 rounded-[8px]">
-                      {selected.length > 0 ? (
-                        selected?.map((e, i) => (
-                          <div key={i} className="flex gap-1">
-                            <p>{i + 1} -</p>
-                            <p>{e.value || arr[0].value}</p>
+                        {selected.length > 0 ? (
+                          selected?.map((e, i) => (
+                            <div key={i} className="flex gap-1">
+                              <p>{i + 1} -</p>
+                              <p>{e.value || arr[0].value}</p>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="flex gap-1">
+                            <p className="text-black">
+                              توجه: اطلاعات شرکت شما برای بررسی صحت اطلاعات وارد
+                              شده با حفظ حریم خصوصی بررسی می شود.
+                            </p>
                           </div>
-                        ))
-                      ) : (
-                        <div className="flex gap-1">
-                          <p className="text-black">
-                            توجه: اطلاعات شرکت شما برای بررسی صحت اطلاعات وارد
-                            شده با حفظ حریم خصوصی بررسی می شود.
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </div>
                     }
                   </div>
 
@@ -240,8 +233,8 @@ const CampaignFlow = () => {
                       </button>
                     ) : (
                       <button
-                        className="px-4 py-2 font-bold text-white bg-gray-300 rounded"
-                        // onClick={handleNextStep}
+                        className="px-4 py-2 font-bold text-white bg-[#DC3545] rounded"
+                        onClick={()=>router.push(`/campaign/selectItems/${router.query.id}`)}
                       >
                         ادامه
                       </button>
