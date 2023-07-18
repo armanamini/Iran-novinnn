@@ -237,7 +237,7 @@ const Signup = () => {
 
             <div className="col-span-6">
               <img
-                src="/images/image 5.png"
+                 src="/images/newLogin.svg"
                 className="!h-[55rem] rounded-[8px] md:hidden"
               />
             </div>

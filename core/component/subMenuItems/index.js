@@ -1,7 +1,11 @@
-import { MailOutlined, SettingOutlined, AppstoreOutlined } from '@ant-design/icons';
-import { Menu } from 'antd';
-import Link from 'next/link';
-import { useState } from 'react';
+import {
+  MailOutlined,
+  SettingOutlined,
+  AppstoreOutlined,
+} from "@ant-design/icons";
+import { Menu } from "antd";
+import Link from "next/link";
+import { useState } from "react";
 
 function getItem(label, key, icon, children, type, link) {
   return {
@@ -10,40 +14,43 @@ function getItem(label, key, icon, children, type, link) {
     children,
     label,
     type,
-    link // New property for the link
+    link,
   };
 }
 
 const items = [
-  getItem('پیشخوان', 'sub1', <MailOutlined />, [
-    getItem('کمپین', '1',"","","","/campaign"),
-    getItem('زیر 2', '2'),
-    getItem('زیر 3', '3'),
-    getItem('زیر 4', '4'),
-  ],),
-  getItem('تبلیغ', 'sub2', <AppstoreOutlined />, [
-    getItem('Option 5', '5'),
-    getItem('Option 6', '6'),
-    getItem('Submenu', 'sub3', null, [getItem('Option 7', '7'), getItem('Option 8', '8')]),
+  getItem("پیشخوان", "sub1", <MailOutlined />, [
+    getItem("کمپین", "1", "", "", "", "/campaign"),
+    getItem("زیر 2", "2"),
+    getItem("زیر 3", "3"),
+    getItem("زیر 4", "4"),
   ]),
-  getItem('گزارش ها', 'sub4', <SettingOutlined />, [
-    getItem('Option 9', '9'),
-    getItem('Option 10', '10'),
-    getItem('Option 11', '11'),
-    getItem('Option 12', '12'),
+  getItem("تبلیغ", "sub2", <AppstoreOutlined />, [
+    getItem("Option 5", "5"),
+    getItem("Option 6", "6"),
+    getItem("Submenu", "sub3", null, [
+      getItem("Option 7", "7"),
+      getItem("Option 8", "8"),
+    ]),
   ]),
-  getItem(' صورت حساب', 'sub5', <SettingOutlined />, [
-    getItem('Option 9', '9'),
-    getItem('Option 10', '10'),
-    getItem('Option 11', '11'),
-    getItem('Option 12', '12'),
+  getItem("گزارش ها", "sub4", <SettingOutlined />, [
+    getItem("Option 9", "9"),
+    getItem("Option 10", "10"),
+    getItem("Option 11", "11"),
+    getItem("Option 12", "12"),
+  ]),
+  getItem(" صورت حساب", "sub5", <SettingOutlined />, [
+    getItem("Option 9", "9"),
+    getItem("Option 10", "10"),
+    getItem("Option 11", "11"),
+    getItem("Option 12", "12"),
   ]),
 ];
 
-const rootSubmenuKeys = ['sub1', 'sub2', 'sub4', 'sub5'];
+const rootSubmenuKeys = ["sub1", "sub2", "sub4", "sub5"];
 
 const SubMenuItems = () => {
-  const [openKeys, setOpenKeys] = useState(['sub1']);
+  const [openKeys, setOpenKeys] = useState(["sub1"]);
   const onOpenChange = (keys) => {
     const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
     if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
@@ -88,8 +95,9 @@ const SubMenuItems = () => {
         )
       )}
 
-      <div className='!bg-[#DC3545] w-full mt-10 p-5'>
-        <p className='text-center text-white'>ساخت کمپین</p>
+      <div className="!bg-[#DC3545] w-full mt-10 p-5 flex items-center justify-center gap-1">
+        <img src="/icons/add.svg" className="!w-[24px]"/>
+        <p className="text-center text-white">ساخت کمپین</p>
       </div>
     </Menu>
   );

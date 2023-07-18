@@ -16,8 +16,6 @@ const CampaignFlow = () => {
   const [newItemState, setNewItemState] = useState();
   const [selected, setSelected] = useState([]);
 
-  const [selectedValue, setSelectedValue] = useState();
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       const local = JSON.parse(localStorage.getItem("token"));
@@ -62,15 +60,31 @@ const CampaignFlow = () => {
 
   const handleNextStep = () => {
     setStep(step + 1);
+    router.push(`/campaign/campaignFlow/${router.query.id}?step=${step + 1}`);
+    console.log(router);
   };
 
   const handlePreviousStep = () => {
     setStep(step - 1);
+    router.push(
+      `/campaign/campaignFlow/${router.query.id}?step=${router.query.step - 1}`
+    );
   };
 
   const handleSelectChange = (e) => {
     setSelected(e);
-    console.log("selectedValue", e);
+
+    // Update the selected value before checking its length
+    const updatedSelected = e;
+
+    if (updatedSelected.length > 0) {
+      localStorage.setItem(
+        `customFileds${e[0]?.mainCustomFiledId}`,
+        JSON.stringify(updatedSelected)
+      );
+    } else {
+      localStorage.removeItem(`customFileds${e[0]?.mainCustomFiledId}`);
+    }
   };
 
   const customStyles = {
@@ -93,7 +107,7 @@ const CampaignFlow = () => {
       <CampaignLayout>
         <div className="flex flex-col items-center justify-center">
           {flow?.map((item, index) => {
-            if (step !== index + 1) return null;
+            if (router.query.step != index + 1) return null;
 
             const filteredOptions = [];
             for (const option of item.options) {
@@ -114,13 +128,11 @@ const CampaignFlow = () => {
                     boxShadow: "0px 4px 12px 0px rgba(0, 0, 0, 0.25)",
                   }}
                 >
-                  <div className="flex flex-wrap items-center justify-center pb-4 px-30">
+                  <div className="flex flex-wrap items-center justify-center gap-2 pb-4 px-30">
                     {filteredOptions?.map((newItem) =>
                       newItem.map((latestItem) => {
-                        console.log("need id", latestItem);
                         switch (newItemState[latestItem?.type_id]) {
                           case "card":
-                            console.log("card", latestItem?.options);
                             return (
                               <FlowCard
                                 data={latestItem.options}
@@ -137,7 +149,6 @@ const CampaignFlow = () => {
                   <div className="flex flex-row flex-wrap items-center justify-center w-full pb-4">
                     {filteredOptions.map((newItem) =>
                       newItem.map((latestItem) => {
-                        console.log("need id", latestItem);
                         switch (newItemState[latestItem.type_id]) {
                           case "select multi":
                             console.log("select multi", latestItem.data);
@@ -148,11 +159,12 @@ const CampaignFlow = () => {
                             const arr = [];
                             parsedOptions.map((element) => {
                               const obj = {
+                                mainCustomFiledId: latestItem.id,
+                                selectedid: element.cfo_id,
                                 label: element.cfo_name,
                                 value: element.cfo_data,
                               };
                               arr.push(obj);
-                              console.log("arr", arr);
                             });
 
                             return (
@@ -179,12 +191,26 @@ const CampaignFlow = () => {
                               </div>
                             );
                           case "select single":
+                            console.log("select single", latestItem);
+                            const parsedOptionsSingle = JSON.parse(
+                              latestItem.options
+                            );
+
+                            const arr2 = [];
+                            parsedOptionsSingle.map((element) => {
+                              const obj = {
+                                label: element.cfo_name,
+                                value: element.cfo_data,
+                              };
+                              arr2.push(obj);
+                            });
                             return (
                               <div className="flex flex-col items-start justify-start w-6/12 h-[100px] px-1">
                                 <label className="py-2">هدف کمپین</label>
                                 <select className="w-full p-1 rounded-[2px] bg-white border py-2">
-                                  <option>1</option>
-                                  <option>2</option>
+                                  {arr2?.map((e) => (
+                                    <option value={e.value}>{e.value}</option>
+                                  ))}
                                 </select>
                               </div>
                             );
@@ -215,7 +241,7 @@ const CampaignFlow = () => {
                   </div>
 
                   <div className="flex items-end justify-end w-full gap-2 pt-3">
-                    {step !== 1 && (
+                    {router.query.step != 1 && (
                       <button
                         className="px-4 py-2 font-bold border border-[#DC3545] bg-white rounded text-[#DC3545]"
                         onClick={handlePreviousStep}
@@ -234,7 +260,11 @@ const CampaignFlow = () => {
                     ) : (
                       <button
                         className="px-4 py-2 font-bold text-white bg-[#DC3545] rounded"
-                        onClick={()=>router.push(`/campaign/selectItems/${router.query.id}`)}
+                        onClick={() =>
+                          router.push(
+                            `/campaign/selectItems/${router.query.id}`
+                          )
+                        }
                       >
                         ادامه
                       </button>

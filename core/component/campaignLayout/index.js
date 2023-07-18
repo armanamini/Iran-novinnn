@@ -13,8 +13,8 @@ const CampaignLayout = ({ children }) => {
         <div
           className={
             openSideBar
-              ? "h-screen col-span-2 border-l xl:col-span-3 !lg:absolute sm:absolute sm:w-full duration-[1000] sm:z-20 transition-transform  sm:bg-white"
-              : "h-screen col-span-2 border-l xl:col-span-3 lg:hidden"
+              ? "h-screen col-span-2 border-l xl:col-span-3 !lg:absolute sm:absolute sm:w-full duration-[1000] sm:z-20 transition-transform sm:bg-white"
+              : "h-screen col-span-2 border-l xl:col-span-3 lg:hidden "
           }
         >
           <div className="p-6">
@@ -44,8 +44,8 @@ const CampaignLayout = ({ children }) => {
         <div
           className={
             openSideBar
-              ? "col-span-10 xl:col-span-9 h-[80px] border-b lg:block sm:col-span-12"
-              : "col-span-10 xl:col-span-9 h-[80px] border-b lg:col-span-12"
+              ? "col-span-10  xl:col-span-9 h-[80px] border-b lg:block sm:col-span-12"
+              : "col-span-10  border-[#8F909A] xl:col-span-9 h-[80px] border-b-2 lg:col-span-12"
           }
         >
           <div className="flex items-center justify-between h-full px-10">
@@ -57,12 +57,23 @@ const CampaignLayout = ({ children }) => {
                 onClick={() => setOpenSideBar(true)}
               />
             )}
+
             <div className="w-4/12 ">
               <Input placeholder="search" />
             </div>
 
-            <div>
-              <Avatar size={50} className="!left-0">
+            <div className="flex items-center justify-end h-full gap-6">
+              <div>
+              <img src="/icons/star.svg" className="!w-[32px] !h-[32px]"/>
+                
+              </div>
+              <p className="text-[16px] font-[500] text-[#DC3545]">موجودی: ۱/۰۰۰/۰۰۰- تومان</p>
+              <div className="bg-[#FFD2D6] px-6 py-[15px] rounded-[2px]">
+                <p className="text-[#DC3545] text-[14px] font-[600]">افزایش موجودی</p>
+              </div>
+              <img src="/icons/notifications.svg" className="!w-[32px] !h-[32px]"/>
+
+              <Avatar size={40} className="!left-0">
                 <div className="flex items-center justify-center !w-full">
                   <p className="text-center font-[40px] !text-white">A</p>
                 </div>

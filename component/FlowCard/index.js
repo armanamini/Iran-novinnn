@@ -1,14 +1,47 @@
-import React, { useEffect } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 
 const FlowCard = ({ data }) => {
+  const [selectedCardId, setSelectedCardId] = useState(null);
+  const router = useRouter();
+  const [localData, setLocalData] = useState(
+    JSON.parse(localStorage.getItem(`Selected card ID (${router.query.step})`))
+  );
+  const step = router.query.step;
+
   useEffect(() => {
-    console.log("data",JSON.parse(JSON.parse(data)[0].cfo_data));
+    if (data && data.length > 0) {
+      console.log("data", JSON.parse(data)[0]);
+    }
   }, [data]);
 
+  const handleSelect = (cardId) => {
+    setSelectedCardId(cardId);
+    localStorage.setItem(`Selected card ID (${step})`, JSON.stringify(cardId));
+    setLocalData(
+      JSON.parse(localStorage.getItem(`Selected card ID (${step})`))
+    );
+
+    console.log("Selected card ID:", cardId);
+  };
+
+  if (!data || data.length === 0) {
+    return null; // handles the case when data is empty
+  }
+
+  const card = JSON.parse(data)[0];
+
   return (
-    <div className="rounded-[16px] w-1/2 border p-10 border-[#DC3545]">
-      <h3>{JSON.parse(JSON.parse(data)[0].cfo_data).name}</h3>
-      <p>{JSON.parse(JSON.parse(data)[0].cfo_data).description}</p>
+    <div
+      className={
+        localData == card.cfo_id
+          ? "rounded-[16px] w-[200px] cursor-pointer p-10 h-[150px] border-[#DC3545] border-[2px]"
+          : "rounded-[16px] w-[200px] cursor-pointer p-10 h-[150px] border-[#DC3545] border-[1px]"
+      }
+      onClick={() => handleSelect(card.cfo_id)}
+    >
+      <h3>{JSON.parse(card.cfo_data)?.name}</h3>
+      <p>{JSON.parse(card.cfo_data)?.description}</p>
     </div>
   );
 };
