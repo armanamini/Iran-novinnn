@@ -6,7 +6,7 @@ const InvoicePdf = () => {
 
 
   useEffect(() => {
-    axios.get(`https://api.adboost.dev/v1/invoice/38`).then((response) => {
+    axios.get(`https://rest.adboost.dev/v1/invoice/38`).then((response) => {
       if (response.data) {
         setData(response.data);
       }

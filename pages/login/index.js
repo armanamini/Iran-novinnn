@@ -18,7 +18,7 @@ const Login = () => {
   const sendData = () => {
     setLoading(true)
     axios
-      .post("https://api.adboost.dev/v1f/users/login", {
+      .post(`${process.env.NEXT_PUBLIC_MAIN_URL}users/login`, {
         username: Email,
         password: password,
       })
@@ -27,7 +27,7 @@ const Login = () => {
           setLoading(false)
           toast.success(response.data.msg);
           console.log(response.data);
-          Cookies.set("token", response.data.data);
+          Cookies.set("token", response.data.user_token);
           localStorage.setItem("token", JSON.stringify(response?.data?.data));
           router.push("/campaign");
         } else {
@@ -41,7 +41,7 @@ const Login = () => {
   const sendOtp = () => {
     setLoading(true)
     axios
-      .post("https://api.adboost.dev/v1f/users/otp", {
+      .post(`${process.env.NEXT_PUBLIC_MAIN_URL}users/otp`, {
         username: Email,
         token: password,
       })

@@ -22,7 +22,7 @@ const Signup = () => {
     setLoading(true);
 
     axios
-      .post("https://api.adboost.dev/v1f/users/sign-up", {
+      .post(`${process.env.NEXT_PUBLIC_MAIN_URL}users/sign-up`, {
         first_name: name,
         last_name: lname,
         username: phone,

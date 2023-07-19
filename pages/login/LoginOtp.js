@@ -43,7 +43,7 @@ const LoginOtp = () => {
     setResendEnabled(false);
     if (isResendEnabled === true) {
       axios
-        .post("https://api.adboost.dev/v1f/users/otp", {
+        .post(`${process.env.NEXT_PUBLIC_MAIN_URL}users/otp`, {
           username: router.query.phone,
           token: otp.join(""),
           again: 1,
@@ -62,7 +62,7 @@ const LoginOtp = () => {
     console.log(otp);
     if (checkOtp != null) {
       axios
-        .post("https://api.adboost.dev/v1f/users/otp", {
+        .post(`${process.env.NEXT_PUBLIC_MAIN_URL}users/otp`, {
           username: router.query.phone,
           token: otp.join(""),
           again: 0,
@@ -71,15 +71,17 @@ const LoginOtp = () => {
           if (response.data.success === true) {
             toast.success(response.data.msg);
             if (response.data.data) {
-              Cookies.set("token", response.data.data);
+              console.log();
+              Cookies.set("token", response.data.user_token);
               localStorage.setItem(
                 "token",
                 JSON.stringify(response?.data?.data)
               );
+                if(Cookies.get('token')){
+                  router.push("/campaign");
+                }
             }
-            if (Cookies.get("token")) {
-              router.push("/campaign");
-            }
+           
           } else {
             toast.error(response.data.msg);
           }
@@ -195,7 +197,7 @@ useEffect(()=>{
 
         <div className="col-span-6 md:col-span-12 ">
           <img
-            src="/images/image 5.png"
+            src="/images/newLogin.svg"
             className="!h-[55rem] rounded-[8px] md:hidden"
           />
         </div>

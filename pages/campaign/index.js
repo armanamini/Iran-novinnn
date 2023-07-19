@@ -8,10 +8,12 @@ import Link from "next/link";
 const Campaign = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
-    axios.get("https://api.adboost.dev/v1f/campaign-type").then((response) => {
-      console.log(response.data);
-      setData(response.data);
-    });
+    axios
+      .get(`${process.env.NEXT_PUBLIC_MAIN_URL}campaign-type`)
+      .then((response) => {
+        console.log(response.data);
+        setData(response.data);
+      });
   }, []);
 
   function getColor(index) {

@@ -21,7 +21,9 @@ const CampaignFlow = () => {
   const [selected, setSelected] = useState([]);
 
   const [selectedValue, setSelectedValue] = useState();
+  const [active, setActive] = useState(false);
   const [totalPrice, setTotalPrice] = useState();
+
   useEffect(() => {
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -46,7 +48,7 @@ const CampaignFlow = () => {
     if (router.query.id) {
       axios
         .get(
-          `https://api.adboost.dev/v1f/campaign-type/items?id=${router.query.id}`
+          `${process.env.NEXT_PUBLIC_MAIN_URL}campaign-type/items?id=${router.query.id}`
         )
         .then((response) => {
           if (response.status == "200") {
@@ -77,6 +79,12 @@ const CampaignFlow = () => {
   const handleData = (e) => {
     setTotalPrice(e);
   };
+
+  useEffect(() => {
+    if (step == 1) {
+      setActive(true);
+    }
+  }, [step]);
   return (
     <div>
       <CampaignLayout>
@@ -111,7 +119,7 @@ const CampaignFlow = () => {
               )}
               {step == 3 && (
                 <div className="flex items-center justify-center w-full gap-4 pb-4 px-30">
-                  <CamapignDetail totalPrice={totalPrice} />
+                  <CamapignDetail totalPrice={totalPrice} step={true} />
                 </div>
               )}
               {step == 4 && (
@@ -121,7 +129,8 @@ const CampaignFlow = () => {
               )}
             </div>
             <div className="flex items-end justify-end w-full gap-2 pt-3">
-              {step !== 1 && (
+              
+              {step != 1 && (
                 <button
                   className="px-4 py-2 font-bold border border-[#DC3545] bg-white rounded text-[#DC3545]"
                   onClick={handlePreviousStep}
@@ -129,13 +138,18 @@ const CampaignFlow = () => {
                   مرحله قبل
                 </button>
               )}
+              
 
-              <button
-                className="px-4 py-2 font-bold text-white rounded bg-[#DC3545]"
-                onClick={handleNextStep}
-              >
-                ادامه
-              </button>
+              {step != 3 && (
+                <button
+                  className="px-4 py-2 font-bold text-white rounded bg-[#DC3545]"
+                  onClick={handleNextStep}
+                >
+                  ادامه
+                </button>
+              )}
+
+              
             </div>
           </div>
         </div>

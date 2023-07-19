@@ -66,6 +66,9 @@ if(storedPrices){
   if (storedItems) {
     updatedItems = JSON.parse(storedItems);
   }
+  useEffect(()=>{
+console.log('daaaaaaaaata',data);
+  },[data])
   
   const isItemSelected = updatedItems.includes(data.id);
   return (

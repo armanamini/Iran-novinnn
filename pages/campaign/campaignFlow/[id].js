@@ -31,7 +31,7 @@ const CampaignFlow = () => {
   useEffect(() => {
     if (router.query.id) {
       axios
-        .get(`https://api.adboost.dev/v1/campaign-type/${router.query.id}`)
+        .get(`https://rest.adboost.dev/v1/campaign-type/${router.query.id}`)
         .then((response) => {
           if (response.data.data.before_item_flow) {
             setFlow(JSON.parse(response.data.data?.before_item_flow));
@@ -48,7 +48,7 @@ const CampaignFlow = () => {
     if (router.query.id) {
       axios
         .get(
-          `https://api.adboost.dev/v1f/campaign-type/details?id=${router.query.id}`
+          `https://rest.adboost.dev/v1f/campaign-type/details?id=${router.query.id}`
         )
         .then((response) => {
           setData(response.data);
@@ -135,8 +135,9 @@ const CampaignFlow = () => {
                           case "card":
                             return (
                               <FlowCard
-                                data={latestItem.options}
                                 key={latestItem.id}
+                                data={latestItem.options}
+                                mainId={latestItem}
                               />
                             );
                           default:
