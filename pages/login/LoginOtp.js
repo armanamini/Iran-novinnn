@@ -124,16 +124,9 @@ useEffect(()=>{
             >
               <BsArrowLeft color="black" size={"20px"} />
             </div>
-            <div className="flex flex-row-reverse items-start justify-center gap-2 py-4">
-              <img src="/icons/Vector.svg" className="!w-[40px] !h-[30px]" />
-              <h2
-                className="text-[#DC3545] text-[20px] font-bold !font-Roboto "
-                style={{
-                  fontFamily: "Roboto",
-                }}
-              >
-                LOGO
-              </h2>
+            <div className="flex flex-row-reverse items-start justify-center gap-2 px-4 py-10">
+              <img src="/images/launch9_copy.png"  className="!w-[40px] !h-[30px]" />
+           
             </div>
             <h3 className="text-center text-[29px] text-black40 font-bold">
               تایید حساب کاربری

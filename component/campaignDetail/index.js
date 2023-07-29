@@ -13,10 +13,12 @@ const CamapignDetail = ({ totalPrice, step }) => {
   const ProductUsageValue = filledData.ProductUsageValue;
   const [cards, setCard] = useState();
   const [dataMultuple, setDataMultiple] = useState();
+  const [dataSignle, setDataSingle] = useState();
 
   useEffect(() => {
     const arrayData = [];
     const arrayDataMultiple = [];
+
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       const value = localStorage.getItem(key);
@@ -29,6 +31,11 @@ const CamapignDetail = ({ totalPrice, step }) => {
       if (key.includes("customFileds")) {
         arrayDataMultiple.push(value);
         setDataMultiple(arrayDataMultiple);
+      }
+
+      if (key.includes("single select")) {
+        console.log(value);
+        setDataSingle(JSON.parse(value));
       }
     }
   }, [step]);
@@ -49,9 +56,9 @@ const CamapignDetail = ({ totalPrice, step }) => {
 
     const values3 = dataMultuple.map((item) => {
       const value3 = JSON.parse(item);
-       const main = value3.map(items=>{
+      const main = value3.map((items) => {
         return items.selectedid;
-      })
+      });
 
       return main;
     });
@@ -66,6 +73,7 @@ const CamapignDetail = ({ totalPrice, step }) => {
         const value3 = values3[index];
         return { ...acc, [key]: value3 };
       }, {}),
+      [dataSignle.parentId]: [dataSignle.id],
     };
 
     axios

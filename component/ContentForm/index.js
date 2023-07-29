@@ -98,7 +98,9 @@ const ContentForm = (props) => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full p-10 bg-white rounded-[4px]" style={{
+      boxShadow: "0px 4px 12px 0px rgba(0, 0, 0, 0.25)"
+    }}>
       <div className="w-full">
         <Input
           type="textarea"

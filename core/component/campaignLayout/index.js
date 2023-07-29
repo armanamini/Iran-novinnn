@@ -20,14 +20,15 @@ const CampaignLayout = ({ children }) => {
           <div className="p-6">
             <div className="flex flex-row-reverse items-start justify-center gap-2 pt-1 pb-3">
               {/* <img src="/icons/Vector.svg" className="!w-[40px] !h-[30px]" /> */}
-              <h2
-                className="text-[#1890FF] text-[20px] font-bold !font-Roboto "
+              <p
+                className="text-[#1890FF] text-[20px] font-bold !font-Roboto mx-auto "
                 style={{
                   fontFamily: "Roboto",
                 }}
               >
-                <img src="/images/mainLogo.png" className="!w-[80%] pb-3" />
-              </h2>
+                <img src="/images/launch9_copy.png" className="!w-[80%] pb-3 mx-auto" />
+                <p className="text-[12px]">version:1.2.0</p>
+              </p>
               <div className="!w-[25px]">
                 <AiOutlineClose
                   color="black"

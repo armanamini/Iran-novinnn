@@ -45,6 +45,7 @@ const FlowCard = ({ data,mainId }) => {
       onClick={() => handleSelect(card.cfo_id)}
     >
       <h3>{JSON.parse(card.cfo_data)?.name}</h3>
+      
       <p>{JSON.parse(card.cfo_data)?.description}</p>
     </div>
   );

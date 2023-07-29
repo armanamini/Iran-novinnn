@@ -5,7 +5,8 @@ import {
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 function getItem(label, key, icon, children, type, link) {
   return {
@@ -19,63 +20,113 @@ function getItem(label, key, icon, children, type, link) {
 }
 
 const items = [
-  getItem("پیشخوان", "sub1", <MailOutlined />, [
-    getItem("کمپین", "1", "", "", "", "/campaign"),
+  getItem("کاربران", "sub1", <MailOutlined />, [
+    getItem("بدون دیتا", "1"),
     getItem("زیر 2", "2"),
     getItem("زیر 3", "3"),
     getItem("زیر 4", "4"),
   ]),
-  getItem("تبلیغ", "sub2", <AppstoreOutlined />, [
-    getItem("Option 5", "5"),
-    getItem("Option 6", "6"),
+  getItem("کمپین", "sub2", <AppstoreOutlined />, [
+    getItem("کمپین", "1", "", "", "", "/campaign"),
+    getItem("لیست کمپین ها", "6","","","","/campaign/campaignList"),
     getItem("Submenu", "sub3", null, [
       getItem("Option 7", "7"),
       getItem("Option 8", "8"),
     ]),
   ]),
-  getItem("گزارش ها", "sub4", <SettingOutlined />, [
+  getItem(" سطوح دسترسی", "sub4", <SettingOutlined />, [
     getItem("Option 9", "9"),
     getItem("Option 10", "10"),
     getItem("Option 11", "11"),
     getItem("Option 12", "12"),
   ]),
-  getItem(" صورت حساب", "sub5", <SettingOutlined />, [
+  getItem("کمپین تایپ ها", "sub5", <SettingOutlined />, [
     getItem("Option 9", "9"),
     getItem("Option 10", "10"),
     getItem("Option 11", "11"),
     getItem("Option 12", "12"),
   ]),
+  getItem("کمپین آیتم ها", "sub6", <SettingOutlined />, [
+    getItem("Option 9", "9"),
+    getItem("Option 10", "10"),
+    getItem("Option 11", "11"),
+    getItem("Option 12", "12"),
+  ]),
+  getItem("کمپین کاستوم فیلدها", "sub7", <SettingOutlined />, [
+    getItem("Option 9", "9"),
+    getItem("Option 10", "10"),
+    getItem("Option 11", "11"),
+    getItem("Option 12", "12"),
+  ]),
+  getItem("فاکتورها", "sub8", <SettingOutlined />, [
+    getItem("Option 9", "9"),
+    getItem("Option 10", "10"),
+    getItem("Option 11", "11"),
+    getItem("Option 12", "12"),
+  ]),
+  getItem("پشتیبانی", "sub9","","","","/support"),
 ];
 
-const rootSubmenuKeys = ["sub1", "sub2", "sub4", "sub5"];
+const rootSubmenuKeys = [
+  "sub1",
+  "sub2",
+  "sub4",
+  "sub5",
+  "sub6",
+  "sub7",
+  "sub8",
+  "sub9"
+];
 
 const SubMenuItems = () => {
-  const [openKeys, setOpenKeys] = useState(["sub1"]);
-  const onOpenChange = (keys) => {
-    const latestOpenKey = keys.find((key) => openKeys.indexOf(key) === -1);
-    if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
-      setOpenKeys(keys);
+  const router = useRouter();
+  const [openKeys, setOpenKeys] = useState(['sub1']);
+  const [activeKey, setActiveKey] = useState(null);
+
+  useEffect(() => {
+    // Get the current active route
+    const currentRoute = router.pathname;
+
+    // Find the matching item for the current active route
+    const matchingItem = items.find(item =>
+      item.link === currentRoute ||
+      (item.children && item.children.some(child => child.link === currentRoute))
+    );
+
+    // If a matching item is found, set it as active
+    if (matchingItem && matchingItem.key) {
+      setActiveKey(matchingItem.key);
+      setOpenKeys([matchingItem.key]);
     } else {
-      setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
+      setActiveKey(null);
+      setOpenKeys([]);
     }
+  }, [router.pathname]);
+
+  const onOpenChange = (keys) => {
+    setOpenKeys(keys);
   };
 
   const renderMenuItem = (item) => {
+    // Check if the item is actve and add "active" class if true
+    const isActive = activeKey == item.key;
+
+    const className = isActive ? "ant-menu-item-selected" : "";
+
     if (item.link) {
       return (
-        <Menu.Item key={item.key} icon={item.icon} type={item.type}>
-          <Link href={item.link}>{item.label}</Link>
+        <Menu.Item key={item.key} icon={item.icon} type={item.type} className={"!p-0  !pr-3"}>
+          <Link className="!w-full text-black block" href={item.link}>{item.label}</Link>
         </Menu.Item>
       );
     } else {
       return (
-        <Menu.Item key={item.key} icon={item.icon} type={item.type}>
+        <Menu.Item key={item.key} icon={item.icon} type={item.type} className={className}>
           {item.label}
         </Menu.Item>
       );
     }
   };
-
   return (
     <Menu
       mode="inline"
@@ -83,6 +134,7 @@ const SubMenuItems = () => {
       onOpenChange={onOpenChange}
       style={{
         width: "100%",
+        border:'none',
       }}
     >
       {items.map((item) =>
@@ -94,13 +146,8 @@ const SubMenuItems = () => {
           renderMenuItem(item)
         )
       )}
-
-      <div className="!bg-[#DC3545] w-full mt-10 p-5 flex items-center justify-center gap-1">
-        <img src="/icons/add.svg" className="!w-[24px]"/>
-        <p className="text-center text-white">ساخت کمپین</p>
-      </div>
     </Menu>
-  );
+  );          
 };
 
 export default SubMenuItems;

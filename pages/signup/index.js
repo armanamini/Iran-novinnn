@@ -60,26 +60,19 @@ const Signup = () => {
       ) : (
         <div className="max-w-[90rem] mx-auto md:p-10">
           <div
-            className="grid grid-cols-12 border rounded-[8px] !h-[55rem] mt-10  md:!h-auto md:py-4"
+            className="grid grid-cols-12 border rounded-[8px] !h-auto pb-10 mt-10  md:!h-auto md:py-4"
             style={{
               boxShadow: "0px 2px 12px 0px rgba(0, 84, 214, 0.15)",
             }}
           >
             <div className="flex flex-col items-start justify-center col-span-6 md:col-span-12">
               <div className="w-7/12 mx-auto md:w-full md:p-3">
-                <div className="flex flex-row-reverse items-start justify-center gap-2 py-4">
-                  <img
-                    src="/icons/Vector.svg"
-                    className="!w-[40px] !h-[30px]"
-                  />
-                  <h2
-                    className="text-[#DC3545] text-[20px] font-bold !font-Roboto "
-                    style={{
-                      fontFamily: "Roboto",
-                    }}
-                  >
-                    LOGO
-                  </h2>
+              <div className="flex flex-row-reverse items-start justify-center gap-2 py-5 pt-10">
+                    <img
+                      src="/images/launch9_copy.png"
+                      className="!w-[80%] "
+                    />
+                 
                 </div>
                 <h3 className="text-center text-[25px] text-black40">
                   ورود به ADDBOOST

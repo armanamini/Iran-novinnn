@@ -274,6 +274,22 @@ span[aria-live="polite"] {
   background-color: #fef9f9 !important;
 }
 
-.ant-menu-sub.ant-menu-inline {
-  background-color: #fff !important;
+.ant-upload-list-item-thumbnail {
+  width: 100px !important;
+  height: 100px !important;
 }
+
+.ant-upload-list-item-thumbnail {
+  width: 100px !important;
+  height: 100px !important;
+}
+
+.ant-tooltip .ant-tooltip-hidden .ant-tooltip-placement-top{
+display: none !important;
+}
+
+.ant-tooltip .ant-tooltip-open .ant-tooltip-placement-top  .ant-tooltip-error{
+  display: none !important;
+  overflow: hidden;
+}
+

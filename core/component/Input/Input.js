@@ -190,7 +190,7 @@ const Input = ({
               value={value}
               onChange={onChange}
               placeholder={placeholder}
-            
+            rows={"7"}
               className={`${classNameInput} bg-grayF3 border-[#D9D9D9] h-full relative outline-none w-full px-2 text-left`}
               name={name}
             />

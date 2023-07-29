@@ -33,8 +33,8 @@ const CampaignFlow = () => {
       axios
         .get(`https://rest.adboost.dev/v1/campaign-type/${router.query.id}`)
         .then((response) => {
-          if (response.data.data.before_item_flow) {
-            setFlow(JSON.parse(response.data.data?.before_item_flow));
+          if (response?.data?.data?.before_item_flow) {
+            setFlow(JSON.parse(response?.data?.data?.before_item_flow));
 
             console.log("flowww", response.data.data);
           } else {
@@ -100,6 +100,15 @@ const CampaignFlow = () => {
       ...provided,
       display: "none", // hide the dropdown chevron
     }),
+  };
+
+  const handleSentSelect = (e) => {
+    console.log(JSON.parse(e.target.value));
+
+    localStorage.setItem(
+      `single select ${JSON.parse(e.target.value).parentId}`,
+      e.target.value
+    );
   };
 
   return (
@@ -200,6 +209,8 @@ const CampaignFlow = () => {
                             const arr2 = [];
                             parsedOptionsSingle.map((element) => {
                               const obj = {
+                                parentId: latestItem.id,
+                                id: element.cfo_id,
                                 label: element.cfo_name,
                                 value: element.cfo_data,
                               };
@@ -208,9 +219,14 @@ const CampaignFlow = () => {
                             return (
                               <div className="flex flex-col items-start justify-start w-6/12 h-[100px] px-1">
                                 <label className="py-2">هدف کمپین</label>
-                                <select className="w-full p-1 rounded-[2px] bg-white border py-2">
+                                <select
+                                  onChange={handleSentSelect}
+                                  className="w-full p-1 rounded-[2px] bg-white border py-2"
+                                >
                                   {arr2?.map((e) => (
-                                    <option value={e.value}>{e.value}</option>
+                                    <option value={JSON.stringify(e)}>
+                                      {e.value}
+                                    </option>
                                   ))}
                                 </select>
                               </div>

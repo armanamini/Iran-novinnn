@@ -3,12 +3,16 @@ import { IconContext } from "react-icons";
 
 const CampaignItems = ({ name, description, color, icon }) => {
   return (
-    <div className={`!h-[173px] w-[170px] border border-[#3E3E3E] mx-auto rounded-[4px]`}>
-      <div className="flex flex-col items-center justify-center w-full h-auto">
-        <img src="/icons/Subject.svg" className="!w-[74px] !h-auto pt-2" />
+    <div className={`!h-[244px] w-[252px] border border-[#C4C4C7] mx-auto rounded-[4px] hover:bg-[#F2F0F4]`}>
+      <div className="flex flex-col items-center justify-center w-full h-full ">
+        <div className="p-2 rounded-[8px]" style={{
+          background: "linear-gradient(0deg, rgba(220, 53, 69, 0.05) 0%, rgba(220, 53, 69, 0.05) 100%), #FEFBFF"
+        }}>
+        <img src="/icons/Subject.svg" className="!w-[72px] !h-[72px]" />
+        </div>
 
-        <h3 className="text-center text-black text-[18px] py-4">{name.length > 12 ? `${name.slice(0,12)}...`:name}</h3>
-        <p className="text-center text-black text-[12px] font-[400]">{description}</p>
+        <h3 className="text-center text-[#DC3545] text-[24px] py-4">{name.length > 12 ? `${name.slice(0,12)}...`:name}</h3>
+        <p className="text-center text-black text-[14px] leading-4 font-[400]">{description ? description :"توضیحات ندارد"}</p>
       </div>
     </div>
   );
