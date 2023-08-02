@@ -62,7 +62,8 @@ const Login = () => {
   };
 
   return (
-    <>
+    <div className="flex items-center justify-center !w-full !h-screen ">
+    
       {loading ? (
         <div className="w-full h-screen ">
           <div className="absolute z-40 top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
@@ -70,7 +71,7 @@ const Login = () => {
           </div>
         </div>
       ) : (
-        <div className="max-w-[90rem] mx-auto md:p-10">
+        <div className="max-w-[90rem] mx-auto">
           <div
             className="grid grid-cols-12 border rounded-[8px] !h-[55rem]  md:!h-auto md:py-4 mt-10 "
             style={{
@@ -81,11 +82,7 @@ const Login = () => {
               {!showOtp ? (
                 <div className="w-7/12 mx-auto md:w-full md:p-3">
                   <div className="flex flex-row-reverse items-start justify-center gap-2 py-10">
-                    <img
-                      src="/images/launch9_copy.png"
-                      className="!w-[80%] "
-                    />
-                  
+                    <img src="/images/launch9_copy.png" className="!w-[80%] " />
                   </div>
                   <h3 className="text-center text-[25px] text-black40">
                     ورود به ADDBOOST
@@ -189,12 +186,8 @@ const Login = () => {
                 </div>
               ) : (
                 <div className="w-7/12 mx-auto md:w-full md:p-3">
-                 <div className="flex flex-row-reverse items-start justify-center gap-2 py-10">
-                    <img
-                      src="/images/launch9_copy.png"
-                      className="!w-[80%] "
-                    />
-               
+                  <div className="flex flex-row-reverse items-start justify-center gap-2 py-10">
+                    <img src="/images/launch9_copy.png" className="!w-[80%] " />
                   </div>
                   <h3 className="text-center text-[25px] text-black40">
                     ورود به ADDBOOST
@@ -261,17 +254,19 @@ const Login = () => {
               )}
             </div>
 
-            <div className="col-span-6 md:col-span-12">
+            <div className="col-span-6 md:col-span-12 bg-[#FEFBFF] h-full">
               <img
                 src="/images/newLogin.svg"
                 className="!h-[55rem] rounded-[8px] md:hidden"
               />
             </div>
           </div>
-        </div>
+        </div>  
+        
       )}
-    </>
+    </div>
   );
+  
 };
 
 export default Login;

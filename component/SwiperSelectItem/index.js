@@ -40,12 +40,12 @@ export default function SwiperItems({ data }) {
         pagination={{
           clickable: true,
         }}
-        className="mySwiper"
+        className="mySwiper "
       >
         <div className="relative grid grid-cols-12 gap-2 p-4 px-8 sm:px-2 md:px-4 lg:px-6">
           {data?.map((item) => (
-            <SwiperSlide key={item.id}>
-              <CampaignCards data={item} handleData={handleData} />
+            <SwiperSlide className="!w-[300px]" key={item.id}>
+              <CampaignCards  data={item} handleData={handleData} />
             </SwiperSlide>
           ))}
         </div>

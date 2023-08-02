@@ -1,11 +1,12 @@
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { AiOutlineCalculator } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-const CamapignDetail = ({ totalPrice, step }) => {
+const CamapignDetail = ({ totalPrice, step, setStep }) => {
   const filledData = useSelector((state) => state.input);
   const textareaValue = filledData.textareaValue;
   const campaignNameValue = filledData.campaignNameValue;
@@ -14,7 +15,7 @@ const CamapignDetail = ({ totalPrice, step }) => {
   const [cards, setCard] = useState();
   const [dataMultuple, setDataMultiple] = useState();
   const [dataSignle, setDataSingle] = useState();
-
+  const router = useRouter();
   useEffect(() => {
     const arrayData = [];
     const arrayDataMultiple = [];
@@ -80,9 +81,9 @@ const CamapignDetail = ({ totalPrice, step }) => {
       .post(
         `${process.env.NEXT_PUBLIC_MAIN_URL}campaign`,
         {
-          title: "title",
-          type_id: 31,
-          balance: 100,
+          title: campaignNameValue,
+          type_id: router.query.id,
+          balance: totalPrice,
           payment_status: 0,
           item_ids: items,
           custom_fields,
@@ -94,8 +95,15 @@ const CamapignDetail = ({ totalPrice, step }) => {
         }
       )
       .then((response) => {
-        toast.success(response.data.msg);
-        console.log(response?.data);
+        if (response.data.success == true) {
+          toast.success(response.data.msg);
+          setStep(4)
+          console.log(response?.data);
+        }else if(response.data.success == false){
+          toast.error(response.data.msg);
+          console.log(response?.data);
+
+        }
       })
       .catch((error) => {
         // toast.error(response.data.msg);
@@ -104,11 +112,12 @@ const CamapignDetail = ({ totalPrice, step }) => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full p-10 bg-white ">
       <div className="flex items-center justify-start">
         <img src="/icons/security.svg" className="!w-[32px] !h-[32px]" />
         <h3 className=" text-[#001849] font-[500] text-[24px]">جزئیات کمپین</h3>
       </div>
+     
       <div className="w-[100%]">
         <div className="w-full mt-10">
           <div className="flex items-center justify-between w-full">
@@ -116,7 +125,7 @@ const CamapignDetail = ({ totalPrice, step }) => {
               <p className="text-[#777777] text-[14px] font-[600]">
                 نام کمپین:{" "}
               </p>
-              <p className="text-[14px] text-[#000000] font-[600]">
+              <p className="text-[14px] text-[#000000] font-[500]">
                 {campaignNameValue}
               </p>
             </div>
@@ -124,7 +133,7 @@ const CamapignDetail = ({ totalPrice, step }) => {
               <p className="text-[#777777] text-[14px] font-[600]">
                 تاریخ شروع و پایان:
               </p>
-              <p className="text-[14px] text-[#000000] font-[600]">
+              <p className="text-[14px] text-[#000000] font-[500]">
                 {campaignStartTimeValue}
               </p>
             </div>
@@ -137,7 +146,7 @@ const CamapignDetail = ({ totalPrice, step }) => {
               <p className="text-[#777777] text-[14px] font-[600]">
                 شبکه اجتماعی:
               </p>
-              <p className="text-[14px] text-[#000000] font-[600]">
+              <p className="text-[14px] text-[#000000] font-[500]">
                 {campaignNameValue}
               </p>
             </div>
@@ -145,8 +154,8 @@ const CamapignDetail = ({ totalPrice, step }) => {
               <p className="text-[#777777] text-[14px] font-[600]">
                 نوع کمپین:
               </p>
-              <p className="text-[14px] text-[#000000] font-[600]">
-                {campaignStartTimeValue}
+              <p className="text-[14px] text-[#000000] font-[500]">
+              {localStorage.getItem("campaign-type")}
               </p>
             </div>
           </div>
@@ -156,13 +165,13 @@ const CamapignDetail = ({ totalPrice, step }) => {
           <div className="flex items-center justify-between w-full">
             <div className="flex w-full gap-1">
               <p className="text-[#777777] text-[14px] font-[600]">موضوع:</p>
-              <p className="text-[14px] text-[#000000] font-[600]">
+              <p className="text-[14px] text-[#000000] font-[500]">
                 {campaignNameValue}
               </p>
             </div>
             <div className="flex w-full gap-1 text-start">
               <p className="text-[#777777] text-[14px] font-[600]">مبلغ کل:</p>
-              <p className="text-[14px] text-[#000000] font-[600]">
+              <p className="text-[14px] text-[#000000] font-[500]">
                 {totalPrice}
               </p>
             </div>
@@ -172,8 +181,8 @@ const CamapignDetail = ({ totalPrice, step }) => {
         <div className="w-full mt-10">
           <div className="flex gap-1">
             <p className="text-[#777777] text-[14px] font-[600]">نوع محتوا:</p>
-            <p className="text-[14px] text-[#000000] font-[600]">
-              {campaignNameValue}
+            <p className="text-[14px] text-[#000000] font-[500]">
+              {/* {localStorage.getItem("campaign-type")} */}
             </p>
           </div>
         </div>
@@ -200,9 +209,15 @@ const CamapignDetail = ({ totalPrice, step }) => {
         <p>{ProductUsageValue}</p>
       </div>
 
-      <div className="flex items-center justify-end w-full mt-10 ">
+      <div className="flex items-center justify-end w-full gap-2 mt-10 ">
         <button
-          className="bg-[#DC3545] text-white p-4"
+          className="px-4 py-2 font-bold border border-[#DC3545] bg-white rounded text-[#DC3545]"
+          onClick={() => setStep((prev)=>prev - 1 )}
+        >
+          مرحله قبل
+        </button>
+        <button
+          className="bg-[#DC3545] text-white px-4 h-[40px] rounded-[2px]"
           onClick={handleSubmitForm}
         >
           تایید و ساخت کمپین

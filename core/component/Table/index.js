@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
 import { GoChevronRight, GoChevronLeft } from "react-icons/go";
+
 const Table = ({ data }) => {
   const itemsPerPage = 8; // Number of items to display per page
 
@@ -33,9 +34,14 @@ const Table = ({ data }) => {
   // Calculate total number of pages
   const totalPages = Math.ceil(data?.length / itemsPerPage);
   // Generate an array of page numbers
-  const pageNumbers = Array.from(
-    { length: totalPages },
-    (_, index) => index + 1
+  const paginationRange = 2; // Number of pages to show before and after the current page
+  const firstPage = Math.max(1, currentPage - paginationRange);
+  const lastPage = Math.min(totalPages, currentPage + paginationRange);
+
+  // Generate an array of page numbers for the visible pages
+  const visiblePageNumbers = Array.from(
+    { length: lastPage - firstPage + 1 },
+    (_, index) => firstPage + index
   );
 
   return (
@@ -159,7 +165,15 @@ const Table = ({ data }) => {
           <GoChevronLeft />
         </button>
         <div className="flex ltr">
-          {pageNumbers.map((pageNumber) => (
+          {/* Show dots at the beginning if not on the first page */}
+          {currentPage > paginationRange + 1 && (
+            <>
+              <span className="mx-1">...</span>
+            </>
+          )}
+
+          {/* Show visible page numbers */}
+          {visiblePageNumbers.map((pageNumber) => (
             <button
               key={pageNumber}
               className={`mx-1 px-3 py-1 rounded  ${
@@ -172,6 +186,13 @@ const Table = ({ data }) => {
               {pageNumber}
             </button>
           ))}
+
+          {/* Show dots at the end if not on the last page */}
+          {currentPage < totalPages - paginationRange && (
+            <>
+              <span className="mx-1">...</span>
+            </>
+          )}
         </div>
         <button
           className="px-4 py-2 font-bold text-black "

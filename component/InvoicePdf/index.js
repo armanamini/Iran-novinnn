@@ -1,22 +1,24 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 const InvoicePdf = () => {
   const [data, setData] = useState([]);
-
-
+  const router = useRouter();
   useEffect(() => {
-    axios.get(`https://rest.adboost.dev/v1/invoice/38`).then((response) => {
-      if (response.data) {
-        setData(response.data);
-      }
-      console.log("invoices", response.data);
-    });
+    axios
+      .get(`https://rest.adboost.dev/v1/invoice/${router.query.id}`)
+      .then((response) => {
+        if (response.data) {
+          setData(response.data);
+        }
+        console.log("invoices", response.data);
+      });
   }, []);
 
   return (
     <div className=" mt-8 bg-[#FEFBFF] ">
-      <div className="max-w-[50rem]  bg-[#fff] rounded-[16px] p-4 px-6 mx-auto  h-auto">
+      <div className="max-w-[50rem] bg-[#fff] rounded-[16px] p-4 px-6 mx-auto  h-auto">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -34,7 +36,7 @@ const InvoicePdf = () => {
         <div className="mt-6 border-b border-[#C5C6D0] pb-6">
           <div className=" flex items-center justify-between gap-x-1 font-[400] text-[#001849]">
             {" "}
-            <p className="font-[400] text-[20px] text-[#001849]">صورتحساب</p>        
+            <p className="font-[400] text-[20px] text-[#001849]">صورتحساب</p>
             <p className="font-[400] text-[20px] text-[#001849]">140/11/11</p>
           </div>
         </div>
@@ -78,7 +80,9 @@ const InvoicePdf = () => {
               </div>
             </div>
 
-            <button className="bg-[#DC3545] mt-4 w-full py-3 text-white rounded-[8px]">
+            <button className="bg-[#DC3545] mt-4 w-full py-3 text-white rounded-[8px]" onClick={()=>{
+              router.push('/campaign/campaignList')
+            }}>
               پرداخت
             </button>
           </div>

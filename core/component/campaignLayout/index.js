@@ -1,6 +1,5 @@
 import { Avatar, Input, Menu } from "antd";
 import React, { Children, useState } from "react";
-import { BiChevronUp } from "react-icons/bi";
 import SubMenuItems from "../subMenuItems";
 import { AiOutlineClose } from "react-icons/ai";
 import { IoMdMenu } from "react-icons/io";
@@ -20,15 +19,18 @@ const CampaignLayout = ({ children }) => {
           <div className="p-6">
             <div className="flex flex-row-reverse items-start justify-center gap-2 pt-1 pb-3">
               {/* <img src="/icons/Vector.svg" className="!w-[40px] !h-[30px]" /> */}
-              <p
+              <div
                 className="text-[#1890FF] text-[20px] font-bold !font-Roboto mx-auto "
                 style={{
                   fontFamily: "Roboto",
                 }}
               >
-                <img src="/images/launch9_copy.png" className="!w-[80%] pb-3 mx-auto" />
+                <img
+                  src="/images/launch9_copy.png"
+                  className="!w-[80%] pb-3 mx-auto"
+                />
                 <p className="text-[12px]">version:1.2.0</p>
-              </p>
+              </div>
               <div className="!w-[25px]">
                 <AiOutlineClose
                   color="black"
@@ -60,19 +62,25 @@ const CampaignLayout = ({ children }) => {
             )}
 
             <div className="w-4/12 ">
-              <Input placeholder="search" />
+              <Input placeholder="جستجو برای چیزی" />
             </div>
 
             <div className="flex items-center justify-end h-full gap-6">
               <div>
-              <img src="/icons/star.svg" className="!w-[32px] !h-[32px]"/>
-                
+                <img src="/icons/star.svg" className="!w-[32px] !h-[32px]" />
               </div>
-              <p className="text-[16px] font-[500] text-[#DC3545]">موجودی: ۱/۰۰۰/۰۰۰- تومان</p>
+              <p className="text-[16px] font-[500] text-[#DC3545]">
+                موجودی: ۱/۰۰۰/۰۰۰- تومان
+              </p>
               <div className="bg-[#FFD2D6] px-6 py-[15px] rounded-[2px]">
-                <p className="text-[#DC3545] text-[14px] font-[600]">افزایش موجودی</p>
+                <p className="text-[#DC3545] text-[14px] font-[600]">
+                  افزایش موجودی
+                </p>
               </div>
-              <img src="/icons/notifications.svg" className="!w-[32px] !h-[32px]"/>
+              <img
+                src="/icons/notifications.svg"
+                className="!w-[32px] !h-[32px]"
+              />
 
               <Avatar size={40} className="!left-0">
                 <div className="flex items-center justify-center !w-full">
@@ -81,7 +89,7 @@ const CampaignLayout = ({ children }) => {
               </Avatar>
             </div>
           </div>
-          <div>{children}</div>
+          <div className="max-w-[100rem] mx-auto">{children}</div>
         </div>
       </div>
     </div>

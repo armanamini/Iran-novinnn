@@ -182,7 +182,7 @@ const Input = ({
       );
     case "textarea":
       return (
-        <div className="flex flex-col gap-1">
+        <div className={`flex flex-col gap-1 ${className}`}>
           <label className="text-lg !text-[14px]">{label}</label>
           <div className="relative flex rounded-lg bg-grayF3">
             <textarea
@@ -190,7 +190,7 @@ const Input = ({
               value={value}
               onChange={onChange}
               placeholder={placeholder}
-            rows={"7"}
+              rows={"7"}
               className={`${classNameInput} bg-grayF3 border-[#D9D9D9] h-full relative outline-none w-full px-2 text-left`}
               name={name}
             />

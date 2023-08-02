@@ -23,7 +23,7 @@ const Campaign = () => {
 
   return (
     <CampaignLayout>
-      <div className="bg-[#FDFBFF] mt-2 h-auto p-10">
+      <div className="bg-[#FDFBFF] h-full min-h-screen mt-2  p-10">
         <div className="p-10 sm:p-2 bg-[#FDFBFF] rounded-[8px]">
           <div>
             <h2 className="text-center text-[28px] font-[700]">نوع کمپین</h2>

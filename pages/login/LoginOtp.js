@@ -109,6 +109,8 @@ useEffect(()=>{
 
 
   return (
+    <div className="flex items-center justify-center !w-full !h-screen">
+      
     <div className="max-w-[90rem] mx-auto md:p-10">
       <div
         className="grid grid-cols-12 border rounded-[8px] !h-[55rem] mt-10  md:!h-auto md:py-4"
@@ -125,7 +127,7 @@ useEffect(()=>{
               <BsArrowLeft color="black" size={"20px"} />
             </div>
             <div className="flex flex-row-reverse items-start justify-center gap-2 px-4 py-10">
-              <img src="/images/launch9_copy.png"  className="!w-[40px] !h-[30px]" />
+              <img src="/images/launch9_copy.png"  className="!w-[80%]" />
            
             </div>
             <h3 className="text-center text-[29px] text-black40 font-bold">
@@ -196,6 +198,8 @@ useEffect(()=>{
         </div>
       </div>
     </div>
+    </div>
+
   );
 };
 

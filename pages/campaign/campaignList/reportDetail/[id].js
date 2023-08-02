@@ -20,7 +20,7 @@ const reportDetail = () => {
     if (router.query.id) {
       axios
         .get(
-          `${process.env.NEXT_PUBLIC_MAIN_URL}campaign/${router.query.id}/report`,
+          `${process.env.NEXT_PUBLIC_MAIN_URL}campaign/${router.query.id}/reports`,
           {
             headers: {
               Authorization: `Bearer ${Cookies.get("token")}`,
@@ -29,8 +29,8 @@ const reportDetail = () => {
         )
         .then((response) => {
           setDataTableInfo(response.data);
-          setChartData(JSON.parse(response.data.items));
-          console.log("response.data", JSON.parse(response.data.items));
+          setChartData(response?.data.balance);
+          console.log("response.data", response);
         });
     }
   }, [router.query]);

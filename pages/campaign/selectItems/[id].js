@@ -210,74 +210,88 @@ const CampaignFlow = () => {
   };
 
   return (
-    <div>
+    <div className="mx-auto ">
       <CampaignLayout>
-        <div className="flex bg-[#FEFBFF] flex-col items-center justify-center">
-          <div className="w-11/12 pt-10">
-
-            {step == 1 && (
-              <>
-              <h1 className="mb-4 text-[24px] font-bold text-[#001849]">پیشنهادها</h1>
-                <div className="px-0 py-4 bg-red-300">
-                  <SwiperITems data={data?.campaignItems} />
-                </div>
-                <StepOneComponent />
-              </>
-            )}
-
-            {step == 2 && (
-              <>
-              <h1 className="mb-4 text-[24px] font-bold text-[#001849]">محتوا</h1>
-
-              <div className="flex items-center justify-center w-full pb-4">  
-                <ContentForm />
-              </div>
-              </>
-            )}
-            {step == 3 && (
-              <div className="flex items-center justify-center w-full gap-4 pb-4 px-30">
-                <CamapignDetail totalPrice={totalPrice} step={true} />
-              </div>
-            )}
-            {step == 4 && (
-              <div className="flex items-center justify-center w-full gap-4 pb-4 px-30">
-                <InvoicePdf />
-              </div>
-            )}
-
-            <div className="flex items-end justify-end w-full gap-2 pt-3">
-              {step != 1 && (
-                <button
-                  className="px-4 py-2 font-bold border border-[#DC3545] bg-white rounded text-[#DC3545]"
-                  onClick={handlePreviousStep}
-                >
-                  مرحله قبل
-                </button>
+        <div className="bg-[#FEFBFF] h-full min-h-screen">
+          <div className="flex flex-col items-center justify-center mt-2 h-max">
+            <div className="w-11/12 pt-5">
+              {step == 1 && (
+                <>
+                  <h1 className="mb-4 text-[24px] font-bold text-[#001849]">
+                    پیشنهادها
+                  </h1>
+                  <div className="px-0 py-4 bg-red-300">
+                    <SwiperITems data={data?.campaignItems} />
+                  </div>
+                  <StepOneComponent />
+                </>
               )}
 
-              {step != 3 && (
-                <div
-                  className={
-                    step == 1
-                      ? "flex flex-row-reverse w-full border-t-[2px] py-4"
-                      : "flex"
-                  }
-                >
+              {step == 2 && (
+                <>
+                  <div className="flex items-start gap-1 ">
+                    <img src="/icons/security.svg" className="!w-[32px]" />
+                    <h1 className="mb-4 text-[24px] font-bold text-[#001849]">
+                      محتوا
+                    </h1>
+                  </div>
+
+                  <div className="flex items-center justify-center w-full pb-4">
+                    <ContentForm />
+                  </div>
+                </>
+              )}
+              {step == 3 && (
+                <div className="flex items-center justify-center w-full gap-4 pb-4 px-30">
+                  <CamapignDetail
+                    totalPrice={totalPrice}
+                    step={true}
+                    setStep={(e) => {
+                      setStep(4);
+                    }}
+                  />
+                </div>
+              )}
+              {step == 4 && (
+                <div className="flex items-center justify-center w-full gap-4 pb-4 px-30">
+                  <InvoicePdf />
+                </div>
+              )}
+
+              <div className="flex items-end justify-end w-full gap-2 pt-3">
+                {step != 1 && step != 3 && (
                   <button
-                    className="px-4 py-2 font-bold text-white rounded bg-[#DC3545]"
-                    onClick={handleNextStep}
+                    className="px-4 py-2 font-bold border border-[#DC3545] bg-white rounded text-[#DC3545]"
+                    onClick={handlePreviousStep}
                   >
-                    ادامه
+                    مرحله قبل
                   </button>
-                  {step == 1 && (
-                    <div className="w-full ">
-                      <p className="text-[23px]">
-                        مجموع: {useFarsi(totalPrice)} تومان
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
+                )}
+
+                {step != 3 && (
+                  <div
+                    className={
+                      step == 1
+                        ? "flex flex-row-reverse w-full border-t-[2px] py-4"
+                        : "flex"
+                    }
+                  >
+                    <button
+                      className="px-4 py-2 font-bold text-white rounded bg-[#DC3545]"
+                      onClick={handleNextStep}
+                    >
+                      ادامه
+                    </button>
+                    {step == 1 && (
+                      <div className="w-full ">
+                        <p className="text-[23px]">
+                          مجموع: {useFarsi(totalPrice)} تومان
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

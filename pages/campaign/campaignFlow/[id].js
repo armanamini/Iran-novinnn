@@ -8,6 +8,7 @@ import FlowCard from "../../../component/FlowCard";
 import { toast } from "react-toastify";
 // import { MultiSelect } from "react-multi-select-component";
 import { Select } from "chakra-react-select";
+import CustomSelectTag from "../../../component/CustomSelectTag";
 
 const CampaignFlow = () => {
   const router = useRouter();
@@ -15,6 +16,9 @@ const CampaignFlow = () => {
   const [data, setData] = useState();
   const [newItemState, setNewItemState] = useState();
   const [selected, setSelected] = useState([]);
+  const [step, setStep] = useState(1);
+
+  const [selectedLabels, setSelectedLabels] = useState([]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -35,7 +39,7 @@ const CampaignFlow = () => {
         .then((response) => {
           if (response?.data?.data?.before_item_flow) {
             setFlow(JSON.parse(response?.data?.data?.before_item_flow));
-
+             localStorage.setItem("campaign-type",response?.data?.data?.name)
             console.log("flowww", response.data.data);
           } else {
             toast.error("دیتایی وجود ندارد");
@@ -56,8 +60,6 @@ const CampaignFlow = () => {
     }
   }, [router.query]);
 
-  const [step, setStep] = useState(1);
-
   const handleNextStep = () => {
     setStep(step + 1);
     router.push(`/campaign/campaignFlow/${router.query.id}?step=${step + 1}`);
@@ -76,7 +78,7 @@ const CampaignFlow = () => {
 
     // Update the selected value before checking its length
     const updatedSelected = e;
-
+    console.log(e);
     if (updatedSelected.length > 0) {
       localStorage.setItem(
         `customFileds${e[0]?.mainCustomFiledId}`,
@@ -101,15 +103,19 @@ const CampaignFlow = () => {
       display: "none", // hide the dropdown chevron
     }),
   };
-
   const handleSentSelect = (e) => {
-    console.log(JSON.parse(e.target.value));
+    const selectedOption = JSON.parse(e.target.value);
+    // setSelected([selectedOption]);
+    setSelectedLabels([selectedOption.label]); // Show only the label of the current selected option
+
+    console.log("selectedOption", selectedOption);
 
     localStorage.setItem(
-      `single select ${JSON.parse(e.target.value).parentId}`,
+      `single select ${selectedOption.parentId}`,
       e.target.value
     );
   };
+  let currentLatestItem = null;
 
   return (
     <div className="overflow-x-hidden">
@@ -137,13 +143,16 @@ const CampaignFlow = () => {
                     boxShadow: "0px 4px 12px 0px rgba(0, 0, 0, 0.25)",
                   }}
                 >
-                  <div className="flex flex-wrap items-center justify-center gap-2 pb-4 px-30">
+                  <div className="flex flex-wrap items-center justify-center gap-8 pb-4 px-30">
                     {filteredOptions?.map((newItem) =>
                       newItem.map((latestItem) => {
                         switch (newItemState[latestItem?.type_id]) {
                           case "card":
                             return (
                               <FlowCard
+                                length={flow.length}
+                                index={index}
+                                setStep={setStep}
                                 key={latestItem.id}
                                 data={latestItem.options}
                                 mainId={latestItem}
@@ -159,28 +168,29 @@ const CampaignFlow = () => {
                   <div className="flex flex-row flex-wrap items-center justify-center w-full pb-4">
                     {filteredOptions.map((newItem) =>
                       newItem.map((latestItem) => {
-                        switch (newItemState[latestItem.type_id]) {
-                          case "select multi":
-                            console.log("select multi", latestItem.data);
-                            const parsedOptions = JSON.parse(
-                              latestItem.options
-                            );
+                        // Store the latest item outside the map function
+                        currentLatestItem = latestItem;
 
-                            const arr = [];
-                            parsedOptions.map((element) => {
-                              const obj = {
-                                mainCustomFiledId: latestItem.id,
-                                selectedid: element.cfo_id,
-                                label: element.cfo_name,
-                                value: element.cfo_data,
-                              };
-                              arr.push(obj);
-                            });
+                        switch (newItemState[currentLatestItem.type_id]) {
+                          case "select multi":
+                            console.log("select multi", currentLatestItem.data);
+                            const parsedOptions = JSON.parse(
+                              currentLatestItem.options
+                            );
+                            const arr = parsedOptions.map((element) => ({
+                              mainCustomFiledId: currentLatestItem.id,
+                              selectedid: element.cfo_id,
+                              label: element.cfo_name,
+                              value: element.cfo_data,
+                            }));
 
                             return (
-                              <div className="flex flex-col items-start justify-start h-[100px] w-6/12 px-1 ">
+                              <div
+                                className="flex flex-col items-start justify-start h-[100px] w-6/12 px-1 "
+                                key={currentLatestItem.id}
+                              >
                                 <label className="py-2">
-                                  {latestItem.name}
+                                  {currentLatestItem.name}
                                 </label>
                                 <div
                                   className="relative w-full"
@@ -200,63 +210,62 @@ const CampaignFlow = () => {
                                 </div>
                               </div>
                             );
-                          case "select single":
-                            console.log("select single", latestItem);
-                            const parsedOptionsSingle = JSON.parse(
-                              latestItem.options
-                            );
 
-                            const arr2 = [];
-                            parsedOptionsSingle.map((element) => {
-                              const obj = {
-                                parentId: latestItem.id,
-                                id: element.cfo_id,
-                                label: element.cfo_name,
-                                value: element.cfo_data,
-                              };
-                              arr2.push(obj);
-                            });
+                          case "select single":
+                            console.log("select single", currentLatestItem);
+                            const parsedOptionsSingle = JSON.parse(
+                              currentLatestItem.options
+                            );
+                            const arr2 = parsedOptionsSingle.map((element) => ({
+                              parentId: currentLatestItem.id,
+                              id: element.cfo_id,
+                              label: element.cfo_name,
+                              value: element.cfo_data,
+                            }));
+
                             return (
-                              <div className="flex flex-col items-start justify-start w-6/12 h-[100px] px-1">
-                                <label className="py-2">هدف کمپین</label>
-                                <select
-                                  onChange={handleSentSelect}
-                                  className="w-full p-1 rounded-[2px] bg-white border py-2"
-                                >
-                                  {arr2?.map((e) => (
-                                    <option value={JSON.stringify(e)}>
-                                      {e.value}
-                                    </option>
-                                  ))}
-                                </select>
+                              <div
+                                className="flex flex-col items-start justify-start w-6/12 h-[100px] px-2"
+                                key={currentLatestItem.id}
+                              >
+                                <label className="py-2">
+                                  {currentLatestItem.name}
+                                </label>
+                                <CustomSelectTag
+                                  options={arr2}
+                                  onChange={(e) => handleSentSelect(e)}
+                                />
                               </div>
                             );
+
                           default:
                             return null;
                         }
                       })
                     )}
-                    {
+
+                    {newItemState[currentLatestItem?.type_id] ===
+                      "select multi" ||
+                    (newItemState[currentLatestItem?.type_id] ===
+                      "select single") ? (
                       <div className="bg-[#FEF9F9] mt-10 w-full border-[#DC3545] border p-5 px-7 rounded-[8px]">
-                        {selected.length > 0 ? (
-                          selected?.map((e, i) => (
-                            <div key={i} className="flex gap-1">
-                              <p>{i + 1} -</p>
-                              <p>{e.value || arr[0].value}</p>
-                            </div>
-                          ))
-                        ) : (
-                          <div className="flex gap-1">
-                            <p className="text-black">
-                              توجه: اطلاعات شرکت شما برای بررسی صحت اطلاعات وارد
-                              شده با حفظ حریم خصوصی بررسی می شود.
+                        {selected?.map((label, index) => (
+                          <div key={index} className="flex gap-1 pr-4">
+                            <p className="text-[14px] font-[700]">
+                              {label.value}
                             </p>
                           </div>
-                        )}
+                        ))}
+                        {selectedLabels?.map((label, index) => (
+                          <div key={index} className="flex gap-1 pr-4">
+                            <p className="text-[14px] font-[700]">
+                              {label}
+                            </p>
+                          </div>
+                        ))}
                       </div>
-                    }
+                    ) : null}
                   </div>
-
                   <div className="flex items-end justify-end w-full gap-2 pt-3">
                     {router.query.step != 1 && (
                       <button
