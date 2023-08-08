@@ -35,18 +35,18 @@ const Input = ({
             {label}
             {required === true && <span className={`text-red2F`}>*</span>}
           </label>
-          <div className={`flex rounded-md relative ${classNameCard}`}>
+          <div className={`flex rounded-md relative  ${classNameCard}`}>
             <input
               value={value}
               onChange={onChange}
               placeholder={placeholder}
               type={typeInput}
-              className={`${classNameInput} border-[#D9D9D9]  !border !rounded-[2px] outline-none w-full py-2`}
+              className={`${classNameInput}  border-[#D9D9D9] px-2 !border !rounded-[4px] outline-none w-full py-2`}
               name={name}
             />
           </div>
         </div>
-      );
+      );                        
     case "normal":
       return (
         <div className={`flex flex-col gap-2 ${className}`}>
@@ -96,7 +96,7 @@ const Input = ({
             className={`!border !rounded-[2px] border-[#D9D9D9] outline-none w-full py-2 ${classNameCard}`}
           >
             <label for="actual-btn" className="p-4 text-gray bg-green54">
-            فایل های ضمیمه را انتخاب کنید
+              فایل های ضمیمه را انتخاب کنید
             </label>
             <input
               id="actual-btn"
@@ -109,7 +109,6 @@ const Input = ({
               hidden
             />
           </div>
-
         </div>
       );
     case "radio":
@@ -198,7 +197,6 @@ const Input = ({
           <span className="text-gray-400">0/100</span>
         </div>
       );
-
     default:
       return (
         <div

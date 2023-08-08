@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 
 const CustomSelect = ({ options, onChange }) => {
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+  const [selectedOption, setSelectedOption] = useState({
+ 
+    value: "انتخاب کنید"
+  });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleOptionChange = (event) => {
@@ -23,7 +26,7 @@ const CustomSelect = ({ options, onChange }) => {
   return (
     <div className="relative w-full">
       <div
-        className="w-full p-1 rounded-[2px] bg-white border py-2 flex items-center justify-between px-4 cursor-pointer"
+        className="w-full p-1 rounded-[2px] bg-white  py-2 flex items-center justify-between px-4 cursor-pointer"
         onClick={toggleDropdown}
       >
         {selectedOption.value}
@@ -47,7 +50,7 @@ const CustomSelect = ({ options, onChange }) => {
         </div>
       </div>
       {isDropdownOpen && (
-        <div className="absolute w-full mt-1 bg-white border rounded shadow">
+        <div className="absolute z-20 w-full bg-white border rounded shadow">
           <ul>
             {options.map((option) => (
               <li
@@ -57,9 +60,9 @@ const CustomSelect = ({ options, onChange }) => {
                     target: { value: JSON.stringify(option) },
                   })
                 }
-                className={`cursor-pointer px-4 py-2 hover:border-r-[3px] hover:bg-[#FEF9F9] hover:text-black hover:border-[#1890FF] ${
+                className={`cursor-pointer px-4 py-2 hover:border-r-[3px] hover:bg-[#FEF9F9] hover:text-black hover:border-[#DC3545] ${
                   selectedOption.id === option.id
-                    ? " border-r-[3px] bg-[#FEF9F9] border-[#1890FF] text-black"
+                    ? " border-r-[3px] bg-[#FEF9F9] border-[#DC3545] text-black"
                     : ""
                 }`}
               >

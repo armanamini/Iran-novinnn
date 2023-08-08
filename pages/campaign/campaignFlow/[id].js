@@ -39,7 +39,10 @@ const CampaignFlow = () => {
         .then((response) => {
           if (response?.data?.data?.before_item_flow) {
             setFlow(JSON.parse(response?.data?.data?.before_item_flow));
-             localStorage.setItem("campaign-type",response?.data?.data?.name)
+            localStorage.setItem(
+              "campaign-type",
+              response?.data?.data?.type_mode
+            );
             console.log("flowww", response.data.data);
           } else {
             toast.error("دیتایی وجود ندارد");
@@ -92,7 +95,7 @@ const CampaignFlow = () => {
   const customStyles = {
     control: (provided) => ({
       ...provided,
-      borderRadius: "2px",
+      borderRadius: "2px ",
       borderColor: "gray.300",
       "&:hover": {
         borderColor: "gray.400",
@@ -100,8 +103,9 @@ const CampaignFlow = () => {
     }),
     dropdownIndicator: (provided) => ({
       ...provided,
-      display: "none", // hide the dropdown chevron
+      display: "block", // hide the dropdown chevron
     }),
+    
   };
   const handleSentSelect = (e) => {
     const selectedOption = JSON.parse(e.target.value);
@@ -118,9 +122,9 @@ const CampaignFlow = () => {
   let currentLatestItem = null;
 
   return (
-    <div className="overflow-x-hidden">
+    <div>
       <CampaignLayout>
-        <div className="flex flex-col items-center justify-center">
+        <div className="flex flex-col items-center justify-center mt-1">
           {flow?.map((item, index) => {
             if (router.query.step != index + 1) return null;
 
@@ -133,17 +137,23 @@ const CampaignFlow = () => {
             }
 
             return (
-              <div key={item?.id} className="w-10/12 pt-10">
-                <h1 className="mb-4 text-2xl font-bold text-black">
-                  {item.name}
-                </h1>
+              <div key={item?.id} className="w-10/12 pt-10 ">
+                <div className="flex gap-2">
+                  <img
+                    src="/icons/security.svg"
+                    className="!w-[32px] !h-[32px]"
+                  />
+                  <h1 className="mb-4 text-2xl font-bold text-black">
+                    {item.name}
+                  </h1>
+                </div>
                 <div
-                  className="p-10  w-full rounded-[8px] mt-10 "
+                  className="px-10 py-[24px] bg-white w-full rounded-[8px]"
                   style={{
                     boxShadow: "0px 4px 12px 0px rgba(0, 0, 0, 0.25)",
                   }}
                 >
-                  <div className="flex flex-wrap items-center justify-center gap-8 pb-4 px-30">
+                  <div className="flex flex-wrap items-center justify-center gap-8">
                     {filteredOptions?.map((newItem) =>
                       newItem.map((latestItem) => {
                         switch (newItemState[latestItem?.type_id]) {
@@ -186,7 +196,7 @@ const CampaignFlow = () => {
 
                             return (
                               <div
-                                className="flex flex-col items-start justify-start h-[100px] w-6/12 px-1 "
+                                className="flex flex-col items-start justify-start w-6/12 px-1 "
                                 key={currentLatestItem.id}
                               >
                                 <label className="py-2">
@@ -225,16 +235,19 @@ const CampaignFlow = () => {
 
                             return (
                               <div
-                                className="flex flex-col items-start justify-start w-6/12 h-[100px] px-2"
+                                className="flex flex-col items-start justify-start w-6/12 px-2"
                                 key={currentLatestItem.id}
                               >
                                 <label className="py-2">
                                   {currentLatestItem.name}
                                 </label>
-                                <CustomSelectTag
-                                  options={arr2}
-                                  onChange={(e) => handleSentSelect(e)}
-                                />
+
+                                <div className="w-full border rounded-[4px]">
+                                  <CustomSelectTag
+                                    options={arr2}
+                                    onChange={(e) => handleSentSelect(e)}
+                                  />
+                                </div>
                               </div>
                             );
 
@@ -244,28 +257,33 @@ const CampaignFlow = () => {
                       })
                     )}
 
-                    {newItemState[currentLatestItem?.type_id] ===
+                    {newItemState[currentLatestItem?.type_id] ==
                       "select multi" ||
-                    (newItemState[currentLatestItem?.type_id] ===
-                      "select single") ? (
-                      <div className="bg-[#FEF9F9] mt-10 w-full border-[#DC3545] border p-5 px-7 rounded-[8px]">
+                    newItemState[currentLatestItem?.type_id] ==
+                      "select single" ? (
+                      <div className="bg-[#FEF9F9] mt-[48px] w-full border-[#DC3545] border p-5 px-4 rounded-[8px]">
                         {selected?.map((label, index) => (
                           <div key={index} className="flex gap-1 pr-4">
-                            <p className="text-[14px] font-[700]">
+                            <p className="text-[14px] font-[500]">
                               {label.value}
                             </p>
                           </div>
                         ))}
                         {selectedLabels?.map((label, index) => (
                           <div key={index} className="flex gap-1 pr-4">
-                            <p className="text-[14px] font-[700]">
-                              {label}
-                            </p>
+                            <p className="text-[14px] font-[500]">{label}</p>
                           </div>
                         ))}
+                        <div className="flex gap-1 pr-4">
+                          <p className="text-[14px] font-[500]">
+                            توجه: اطلاعات شرکت شما برای بررسی صحت اطلاعات وارد
+                            شده با حفظ حریم خصوصی بررسی می شود.
+                          </p>
+                        </div>
                       </div>
                     ) : null}
                   </div>
+
                   <div className="flex items-end justify-end w-full gap-2 pt-3">
                     {router.query.step != 1 && (
                       <button

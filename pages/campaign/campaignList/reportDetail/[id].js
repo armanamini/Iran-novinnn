@@ -11,6 +11,7 @@ const EChartsComponent = dynamic(
     ssr: false,
   }
 );
+
 const reportDetail = () => {
   const [dataTableInfo, setDataTableInfo] = useState();
   const [chartData, setChartData] = useState();

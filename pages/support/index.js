@@ -17,6 +17,7 @@ const [supportData,setSupportData] = useState()
         headers: {
           Authorization: `Bearer ${Cookies.get("token")}`,
         },
+
       })
       .then((response) => {
         console.log(response?.data);

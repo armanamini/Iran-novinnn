@@ -1,48 +1,20 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
 import { GoChevronRight, GoChevronLeft } from "react-icons/go";
 
 const Table = ({ data }) => {
-  const itemsPerPage = 8; // Number of items to display per page
-
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // Calculate the index range of items to display based on the current page
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-
-  // Get the current page's data
-  const [currentData, setCurrentData] = useState([]);
-
-  const filteredData = useMemo(() => {
-    return data?.length > 0 ? data.slice(startIndex, endIndex) : [];
-  }, [data, startIndex, endIndex]);
-
-  useEffect(() => {
-    setCurrentData(filteredData);
-  }, [filteredData]);
-
-  // Handle page change
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const handleSearch = (e) => {
-    const enteredData = e.target.value;
-    setCurrentData(data?.filter((item) => item.title.includes(enteredData)));
-  };
-  // Calculate total number of pages
-  const totalPages = Math.ceil(data?.length / itemsPerPage);
-  // Generate an array of page numbers
-  const paginationRange = 2; // Number of pages to show before and after the current page
-  const firstPage = Math.max(1, currentPage - paginationRange);
-  const lastPage = Math.min(totalPages, currentPage + paginationRange);
-
-  // Generate an array of page numbers for the visible pages
+  const router = useRouter();
+  const filteredData = data?.campaigns;
   const visiblePageNumbers = Array.from(
-    { length: lastPage - firstPage + 1 },
-    (_, index) => firstPage + index
+    { length: data?.pageCount },
+    (_, index) => 1 + index
   );
+
+  const handlePageChange = (pageNumber) => {
+    console.log(pageNumber);
+    router.push(`/campaign/campaignList?page=${pageNumber}`);
+  };
 
   return (
     <div className="max-w-[90rem] mx-auto">
@@ -53,7 +25,6 @@ const Table = ({ data }) => {
           type="text"
           className="w-[25%] px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="جستجو"
-          onChange={handleSearch}
         />
 
         {/* Filter 2 */}
@@ -120,7 +91,7 @@ const Table = ({ data }) => {
         </thead>
         <tbody>
           {/* Table rows */}
-          {currentData?.map((item) => (
+          {filteredData?.map((item) => (
             <tr key={item.id}>
               <td className="p-3 border border-gray-[#000000]">{item.title}</td>
               <td className="p-3 border border-gray-[#000000]">
@@ -156,52 +127,59 @@ const Table = ({ data }) => {
       </table>
 
       {/* Pagination */}
+
       <div className="flex justify-start mt-4 ltr">
+        {/* Button to go to the previous page */}
         <button
-          className="px-4 py-2 font-bold text-black "
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
+          className="px-4 py-2 font-bold text-black"
+          disabled={router.query.page === 1}
+          onClick={() => handlePageChange(router.query.page - 1)}
         >
           <GoChevronLeft />
         </button>
+
         <div className="flex ltr">
-          {/* Show dots at the beginning if not on the first page */}
-          {currentPage > paginationRange + 1 && (
-            <>
-              <span className="mx-1">...</span>
-            </>
-          )}
-
           {/* Show visible page numbers */}
-          {visiblePageNumbers.map((pageNumber) => (
-            <button
-              key={pageNumber}
-              className={`mx-1 px-3 py-1 rounded  ${
-                currentPage === pageNumber
-                  ? "border-[#1890FF] border text-[#1890FF]"
-                  : "bg-white text-black"
-              }`}
-              onClick={() => handlePageChange(pageNumber)}
-            >
-              {pageNumber}
-            </button>
-          ))}
-
-          {/* Show dots at the end if not on the last page */}
-          {currentPage < totalPages - paginationRange && (
-            <>
-              <span className="mx-1">...</span>
-            </>
-          )}
+          {visiblePageNumbers.map((pageNumber, index) => {
+            if (
+              Math.abs(router.query.page - pageNumber) <= 4 ||
+              index === 0 ||
+              index === visiblePageNumbers.length - 1
+            ) {
+              return (
+                <button
+                  key={pageNumber}
+                  className={`mx-1 px-3 py-1 rounded ${
+                    router.query.page === pageNumber
+                      ? "border-[#1890FF] border text-[#1890FF]"
+                      : "bg-white text-black"
+                  }`}
+                  onClick={() => handlePageChange(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              );
+            } else if (Math.abs(router.query.page - pageNumber) === 5) {
+              return (
+                <span key="ellipsis" className="mx-1">
+                  ...
+                </span>
+              );
+            }
+            return null;
+          })}
         </div>
+
+        {/* Button to go to the next page */}
         <button
-          className="px-4 py-2 font-bold text-black "
-          disabled={currentPage === totalPages}
-          onClick={() => handlePageChange(currentPage + 1)}
+          className="px-4 py-2 font-bold text-black"
+          // disabled={currentPage}
+          onClick={() => handlePageChange(router.query.page + 1)}
         >
           <GoChevronRight />
         </button>
       </div>
+      
     </div>
   );
 };

@@ -23,7 +23,7 @@ const Campaign = () => {
 
   return (
     <CampaignLayout>
-      <div className="bg-[#FDFBFF] h-full min-h-screen mt-2  p-10">
+      <div className="bg-[#FDFBFF] h-full min-h-screen mt-[1px]  p-10">
         <div className="p-10 sm:p-2 bg-[#FDFBFF] rounded-[8px]">
           <div>
             <h2 className="text-center text-[28px] font-[700]">نوع کمپین</h2>
@@ -48,7 +48,7 @@ const Campaign = () => {
               ))}
             </div>
 
-            <div className="grid items-center w-full grid-cols-12 gap-2 pt-10 gap-x-8">
+            <div className="grid items-center w-full grid-cols-12 pt-10 gap-y-4 gap-x-4">
               {data?.slice(3)?.map((item, index) => (
                 <Link
                   className="w-full col-span-4 mx-auto xxxl:col-span-6 sm:col-span-12"

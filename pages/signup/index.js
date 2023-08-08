@@ -1,13 +1,42 @@
 import React, { useState } from "react";
-import { Input, Select } from "antd";
+import { Input } from "antd";
 import { Button, Space } from "antd";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { Router, useRouter } from "next/router";
 import Loader from "../../component/loader";
+import { BiChevronDown } from "react-icons/bi";
+import Select from '../../component/CusotmSelect'
+import CustomSelect from "../../component/CustomSelectTag";
 
 const Signup = () => {
+  const arr = [
+    {
+      parentId: 1,
+      id: 1,
+      label: "نوع کاربر خود را انتخاب کنید",
+      value: "نوع کاربر خود را انتخاب کنید",
+    },
+    {
+      parentId: 2,
+      id: 2,
+      label: "تبلیغ دهنده",
+      value: "تبلیغ دهنده",
+    },
+    {
+      parentId: 3,
+      id: 3,
+      label: "ناشر تبلیغات",
+      value: "ناشر تبلیغات",
+    },
+    {
+      parentId: 4,
+      id: 4,
+      label: "هردو",
+      value: "هردو",
+    }
+  ]
   const router = useRouter();
   const [userRole, setUserRole] = useState("");
   const [name, setName] = useState("");
@@ -45,10 +74,11 @@ const Signup = () => {
           toast.error(response.data.msg);
         }
         setLoading(false);
-        
       });
   };
-
+  const handleSentSelect = (e) => {
+    console.log(e);
+   };
   return (
     <>
       {loading ? (
@@ -60,23 +90,30 @@ const Signup = () => {
       ) : (
         <div className="max-w-[90rem] mx-auto md:p-10">
           <div
-            className="grid grid-cols-12 border rounded-[8px] !h-auto pb-10 mt-10  md:!h-auto md:py-4"
+            className="grid grid-cols-12 border rounded-[8px] !h-[66rem] mt-10  md:!h-auto md:py-4"
             style={{
               boxShadow: "0px 2px 12px 0px rgba(0, 84, 214, 0.15)",
             }}
           >
             <div className="flex flex-col items-start justify-center col-span-6 md:col-span-12">
               <div className="w-7/12 mx-auto md:w-full md:p-3">
-              <div className="flex flex-row-reverse items-start justify-center gap-2 py-5 pt-10">
-                    <img
-                      src="/images/launch9_copy.png"
-                      className="!w-[80%] "
-                    />
-                 
+                <div className="flex flex-row-reverse items-start justify-center gap-2 py-5 pt-10">
+                  <img src="/images/launch9_copy.png" className="!w-[50%] " />
                 </div>
-                <h3 className="text-center text-[25px] text-black40">
-                  ورود به ADDBOOST
-                </h3>
+                <div className="flex items-center justify-center gap-2">
+                  <h3 className="text-center text-[28px] font-IRANYekan font-[600] text-black40">
+                    {" "}
+                    ورود به{" "}
+                  </h3>
+                  <h3
+                    className="text-center text-[28px] font-IRANYekan font-[600] text-black40"
+                    style={{
+                      fontFamily: "sans-serif",
+                    }}
+                  >
+                    Launcho
+                  </h3>
+                </div>
                 <div className="flex items-center justify-center gap-1 py-1">
                   <h3 className="text-center text-grayA5">
                     ثبت نام نکرده اید؟
@@ -163,32 +200,40 @@ const Signup = () => {
                 </div>
 
                 <div className="w-full mt-4">
+
                   <label>نوع کاربر</label>
-                  <select
+                  <div className="bg-white text-[#BFBFBF] border border-gray-300 rounded-[2px] w-full">
+
+                  <CustomSelect options={arr} onChange={(e) => handleSentSelect(e)}/>
+                  </div>
+
+              
+                  {/* <select
                     value={userRole}
-                    className="bg-white border border-gray-300 rounded-[2px] p-[.6rem] w-full"
+                    className="bg-white text-[#BFBFBF] border border-gray-300 rounded-[2px] p-[.6rem] w-full"
                     onChange={(e) => {
                       setUserRole(e.target.value);
                     }}
                   >
-                    <option className="!text-gray-100">
+                    <option className="!text-gray-100 ">
                       نوع کاربر خود را انتخاب کنید
                     </option>
                     <option value="1">تبلیغ دهنده</option>
                     <option value="2">ناشر تبلیغات</option>
                     <option value="3">هردو</option>
-                  </select>
+                  </select> */}
                 </div>
 
                 <div className="w-full mt-4">
                   <Button
+                    type="primary"
                     style={{
                       backgroundColor: "#DC3545",
                       width: "100%",
                     }}
                     onClick={sendData}
                   >
-                    <p className="text-white">ورود/ثبت نام</p>
+                    <p className="font-thin text-white">ورود/ثبت نام</p>
                   </Button>
                 </div>
 
@@ -228,10 +273,10 @@ const Signup = () => {
               </div>
             </div>
 
-            <div className="col-span-6">
+            <div className="col-span-6 md:col-span-12 bg-[#FEFBFF] h-full">
               <img
-                 src="/images/newLogin.svg"
-                className="!h-[55rem] rounded-[8px] md:hidden"
+                src="/images/newLogin.svg"
+                className="!h-full rounded-[8px] md:hidden"
               />
             </div>
           </div>

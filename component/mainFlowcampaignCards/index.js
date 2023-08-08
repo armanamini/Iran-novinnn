@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useFarsi } from "../../helper/useFarsiDigits";
+import config from "../../data/config.json";
 
 const CampaignCards = ({ data, handleData }) => {
   const [handleId, setHandleId] = useState([data.id]);
   const [arr, setArr] = useState([]);
   const [totalPrice, setTotalPrice] = useState();
+  const [propertyName, setPropertyName] = useState(config[0]?.propertyName);
+  const [propertyName2, setPropertyName2] = useState(config[0]?.propertyName2);
 
   const handleClicked = (e) => {
     const storedItems = localStorage?.getItem("items");
@@ -61,22 +64,16 @@ const CampaignCards = ({ data, handleData }) => {
   if (storedItems) {
     updatedItems = JSON.parse(storedItems);
   }
-  useEffect(() => {
-    console.log("daaaaaaaaata", JSON.parse(data.options));
-  }, [data]);
 
   const isItemSelected = updatedItems.includes(data.id);
   return (
     <div
       class={
-        isItemSelected
-          ? "relative col-span-4  md:col-span-6 sm:col-span-12 border-[3px] mx-auto border-[#00000040] w-full rounded-[4px]"
-          : "relative border col-span-4  md:col-span-6 mx-auto sm:col-span-12 rounded-[4px] w-full"
+        "relative border rounded-[4px] col-span-4  md:col-span-6 mx-auto sm:col-span-12  w-full"
       }
-      onClick={() => handleClicked(data.id)}
     >
-      <div class="relative cursor-pointer inline-block duration-300 ease-in-out transition-transform transform hover:-translate-y-2 w-full">
-        <div class="shadow p-4 rounded-lg bg-white">
+      <div class="relative inline-block w-full">
+        <div class="shadow p-4 rounded-[4px] bg-white">
           <div class="flex justify-center relative rounded-lg overflow-hidden h-[80%] w-[80%]">
             <div class="absolute w-full inset-0 rounded-[50%] bg-black opacity-10 border border-gray-950"></div>
           </div>
@@ -89,24 +86,31 @@ const CampaignCards = ({ data, handleData }) => {
 
           <div className="pt-4">
             <div className="flex items-center justify-between px-4">
-              <img src="/icons/profile.svg" className="!w-[64px] !h-[64px]" />
+              <img src={data?.primary_image ?data?.primary_image : "/icons/profile.svg"} className="!w-[64px] !h-[64px] rounded-[50%]" />
               <div className="flex flex-col items-center justify-center">
-                <p className="text-[24px] font-[600] ">{useFarsi("123")}%</p>
-                <span className="text-[#00000073] text-[16px] block font-[600]">
+                <p className="text-[22px] font-[600] ">
+                  {useFarsi(data[propertyName])}
+                </p>
+                <span className="text-[#00000073] text-[14px] block font-[600]">
                   امتیاز
                 </span>
               </div>
 
               <div>
-                <p className="text-[24px] font-[600]">{useFarsi("132")}k</p>
-                <span className="text-[#00000073] text-[16px] block font-[600]">
+                <p className="text-[22px] font-[600]">
+                  {useFarsi(data[propertyName2])}
+                </p>
+                <span className="text-[#00000073] text-[14px] block font-[600]">
                   فالوورها
                 </span>
               </div>
             </div>
 
             <div className="flex flex-col px-4 pt-2">
-              <p className="text-[16px] font-[600] ltr text-end">@ArmanAmini</p>
+              <p className="text-[16px] font-[500] ltr text-end">
+                {" "}
+                {data?.name}
+              </p>
               <span className="block text-[14px] font-[600] text-[#FF4004]">
                 برنامه نویسی
               </span>
@@ -140,9 +144,22 @@ const CampaignCards = ({ data, handleData }) => {
               </p>
             </div>
 
-            <div class="flex items-center border border-[#DC3545] rounded-[4px]">
-              <p class=" text-[#DC3545] text-center w-full line-clamp-1">
-                انتخاب{" "}
+            <div
+              onClick={() => handleClicked(data.id)}
+              class={
+                isItemSelected
+                  ? "cursor-pointer flex items-center border border-[#DC3545] bg-[#DC3545] rounded-[4px]"
+                  : "cursor-pointer flex items-center border border-[#DC3545] rounded-[4px]"
+              }
+            >
+              <p
+                class={
+                  isItemSelected
+                    ? " text-white text-center w-full line-clamp-1 "
+                    : " text-[#DC3545] text-center w-full line-clamp-1"
+                }
+              >
+                {isItemSelected ? "انتخاب شده" : "انتخاب"}
               </p>
             </div>
           </div>

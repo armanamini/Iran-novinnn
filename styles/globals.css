@@ -270,7 +270,13 @@ span[aria-live="polite"] {
   color: rgba(0, 0, 0, 0.45);
 }
 
-.ant-menu-item-selected , .ant-menu-item-active{
+.ant-menu-item-selected,
+.ant-menu-item-active {
+  background-color: #fef9f9 !important;
+}
+
+.ant-menu-item-selected::before,
+.ant-menu-item-active::before {
   background-color: #fef9f9 !important;
 }
 
@@ -284,12 +290,40 @@ span[aria-live="polite"] {
   height: 100px !important;
 }
 
-.ant-tooltip .ant-tooltip-hidden .ant-tooltip-placement-top{
-display: none !important;
+.ant-tooltip .ant-tooltip-hidden .ant-tooltip-placement-top {
+  display: none !important;
 }
 
-.ant-tooltip .ant-tooltip-open .ant-tooltip-placement-top  .ant-tooltip-error{
+.ant-tooltip .ant-tooltip-open .ant-tooltip-placement-top .ant-tooltip-error {
   display: none !important;
   overflow: hidden;
 }
 
+.ant-menu-light.ant-menu-inline .ant-menu-sub.ant-menu-inline,
+.ant-menu-light > .ant-menu.ant-menu-inline .ant-menu-sub.ant-menu-inline {
+  background-color: #fff !important;
+}
+
+.ant-menu-light .ant-menu-submenu-selected > .ant-menu-submenu-title,
+.ant-menu-light
+  > .ant-menu
+  .ant-menu-submenu-selected
+  > .ant-menu-submenu-title  {
+  color: #DC3545D9 ;
+}
+.ant-menu-submenu-open .ant-menu-submenu-selected  .ant-menu-submenu-title  .ant-menu-title-content{
+  color: #DC3545D9 !important;
+}
+
+.ant-menu-submenu-selected span.ant-menu-title-content {
+  color: #DC3545D9 !important;
+}
+.ant-menu-submenu-selected span.ant-menu-title-content a{
+  color: #323232 !important;
+}
+span.ant-menu-title-content > a{
+  color: #323232 !important;
+}
+#react-select-2-live-region{
+  display: none;
+}

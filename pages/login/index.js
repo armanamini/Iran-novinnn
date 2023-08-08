@@ -6,13 +6,41 @@ import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 import { Router, useRouter } from "next/router";
 import Loader from "../../component/loader";
-
+import { BiChevronDown } from "react-icons/bi";
+import CustomSelect from "../../component/CustomSelectTag";
 const Login = () => {
+  const arr = [
+    {
+      parentId: 1,
+      id: 1,
+      label: "نوع کاربر خود را انتخاب کنید",
+      value: "نوع کاربر خود را انتخاب کنید",
+    },
+    {
+      parentId: 2,
+      id: 2,
+      label: "تبلیغ دهنده",
+      value: "تبلیغ دهنده",
+    },
+    {
+      parentId: 3,
+      id: 3,
+      label: "ناشر تبلیغات",
+      value: "ناشر تبلیغات",
+    },
+    {
+      parentId: 4,
+      id: 4,
+      label: "هردو",
+      value: "هردو",
+    }
+  ]
   const [Email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [showOtp, setShowOtp] = useState(false);
   const [showeOtpInput, setShowOtpInput] = useState(false);
   const [loading, setLoading] = useState();
+  const [userRole, setUserRole] = useState("");
 
   const router = useRouter();
   const sendData = () => {
@@ -60,10 +88,11 @@ const Login = () => {
         }
       });
   };
-
+  const handleSentSelect = (e) => {
+   console.log(e);
+  };
   return (
     <div className="flex items-center justify-center !w-full !h-screen ">
-    
       {loading ? (
         <div className="w-full h-screen ">
           <div className="absolute z-40 top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
@@ -82,11 +111,22 @@ const Login = () => {
               {!showOtp ? (
                 <div className="w-7/12 mx-auto md:w-full md:p-3">
                   <div className="flex flex-row-reverse items-start justify-center gap-2 py-10">
-                    <img src="/images/launch9_copy.png" className="!w-[80%] " />
+                    <img src="/images/launch9_copy.png" className="!w-[50%] " />
                   </div>
-                  <h3 className="text-center text-[25px] text-black40">
-                    ورود به ADDBOOST
-                  </h3>
+                  <div className="flex items-center justify-center gap-2">
+                    <h3 className="text-center text-[28px] font-IRANYekan font-[600] text-black40">
+                      {" "}
+                      ورود به{" "}
+                    </h3>
+                    <h3
+                      className="text-center text-[28px] font-IRANYekan font-[600] text-black40"
+                      style={{
+                        fontFamily: "sans-serif",
+                      }}
+                    >
+                      Launcho
+                    </h3>
+                  </div>
                   <div className="flex items-center justify-center gap-1 py-1">
                     <h3 className="text-center text-grayA5">
                       ثبت نام نکرده اید؟
@@ -105,7 +145,8 @@ const Login = () => {
                     <div className="mt-4">
                       <label>شماره تلفن/ایمیل</label>
                       <Input
-                        placeholder="شماره تلفن/ایمیل  خود را وارد کنید"
+                      type="primary"
+                        placeholder="شماره تلفن/ایمیل خود را وارد کنید"
                         style={{
                           borderRadius: "2px",
                         }}
@@ -130,7 +171,15 @@ const Login = () => {
                   </div>
 
                   <div className="w-full mt-4">
+                    <label>نوع کاربر</label>
+                    <div className="bg-white text-[#BFBFBF] border border-gray-200 rounded-[2px] w-full">
+                    <CustomSelect options={arr} onChange={(e) => handleSentSelect(e)}/>
+                    </div>
+                  </div>
+
+                  <div className="w-full mt-4">
                     <Button
+                      type="primary"
                       style={{
                         backgroundColor: "#DC3545",
                         width: "100%",
@@ -144,13 +193,19 @@ const Login = () => {
                   <div>
                     <p
                       onClick={() => setShowOtp(true)}
-                      className="underline cursor-pointer text-yellow07 text-[17px] text-center pt-2"
+                      className="after:!w-[130px] after:mx-auto after:block after:!h-[1px] after:bg-yellow07 cursor-pointer text-yellow07 text-[14px] text-center pt-2"
                     >
-                      ورد با رمز یکبار مصرف
+                      ورود با رمز یکبار مصرف
                     </p>
                   </div>
 
-                  <div className="w-full mt-4">
+                  <div className="flex items-center justify-center gap-2 py-4">
+                    <div className="w-full h-[1px] bg-[#C4C4C7]"></div>
+                    <p className="text-[#C4C4C7]">یا</p>
+                    <div className="w-full h-[1px] bg-[#C4C4C7]"></div>
+                  </div>
+
+                  <div className="w-full">
                     <Button
                       style={{
                         backgroundColor: "white",
@@ -163,7 +218,7 @@ const Login = () => {
                           src="/icons/image 7.png"
                           className="!w-[18px] !h-[18px]"
                         />
-                        <p className="text-[#1890FF] mx-auto font-thin">
+                        <p className="text-[#1890FF] mx-auto font-thin ">
                           ورود با گوگل{" "}
                         </p>
                       </div>
@@ -187,11 +242,22 @@ const Login = () => {
               ) : (
                 <div className="w-7/12 mx-auto md:w-full md:p-3">
                   <div className="flex flex-row-reverse items-start justify-center gap-2 py-10">
-                    <img src="/images/launch9_copy.png" className="!w-[80%] " />
+                    <img src="/images/launch9_copy.png" className="!w-[50%] " />
                   </div>
-                  <h3 className="text-center text-[25px] text-black40">
-                    ورود به ADDBOOST
-                  </h3>
+                  <div className="flex items-center justify-center gap-2">
+                    <h3 className="text-center text-[28px] font-IRANYekan font-[600] text-black40">
+                      {" "}
+                      ورود به{" "}
+                    </h3>
+                    <h3
+                      className="text-center text-[28px] font-IRANYekan font-[600] text-black40"
+                      style={{
+                        fontFamily: "sans-serif",
+                      }}
+                    >
+                      Launcho
+                    </h3>
+                  </div>
                   <div className="flex items-center justify-center gap-1 py-1">
                     <h3 className="text-center text-grayA5">
                       ثبت نام نکرده اید؟
@@ -221,13 +287,15 @@ const Login = () => {
 
                   <div className="w-full mt-4">
                     <Button
+                      type="primary"
                       style={{
                         backgroundColor: "#DC3545",
                         width: "100%",
                       }}
+                      className="hover:!outline-none hover:!border-none hover:appearance-none"
                       onClick={sendOtp}
                     >
-                      <p className="text-white">ارسال کد</p>
+                      <p className="font-thin text-white">ارسال کد</p>
                     </Button>
                   </div>
 
@@ -242,9 +310,9 @@ const Login = () => {
                       <div className="flex items-center">
                         <img
                           src="/icons/image 7.png"
-                          className="!w-[18px] !h-[18px] md:!invisible"
+                          className="!w-[18px] !h-[18px]"
                         />
-                        <p className="text-[#1890FF] mr-[8.5rem] font-thin md:mr-16">
+                        <p className="text-[#1890FF] mx-auto font-thin ">
                           ورود با گوگل{" "}
                         </p>
                       </div>
@@ -257,16 +325,14 @@ const Login = () => {
             <div className="col-span-6 md:col-span-12 bg-[#FEFBFF] h-full">
               <img
                 src="/images/newLogin.svg"
-                className="!h-[55rem] rounded-[8px] md:hidden"
+                className="!h-full rounded-[8px] md:hidden"
               />
             </div>
           </div>
-        </div>  
-        
+        </div>
       )}
     </div>
   );
-  
 };
 
 export default Login;

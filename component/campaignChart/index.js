@@ -22,8 +22,8 @@ const EChartsComponent = ({ data }) => {
           show: false,
           type: 'continuous',
           seriesIndex: 0,
-          min: valueList ? Math.min(...valueList) : 0,
-          max: valueList ? Math.max(...valueList) : 0,
+          min: valueList ? Math.min(...valueList) :10,
+          max: valueList ? Math.max(...valueList) : 100,
         },
        
       ],

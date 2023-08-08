@@ -7,8 +7,8 @@ const CampaignListItems = ({ name }) => {
         <img src="/icons/nfc.svg" className="!w-[48px] !h-[48px]" />
       </div>
       <div className="flex flex-col items-start justify-center !h-[100%]">
-        <p className="text-[22px] pb-3 font-[500] text-[#DC3545]">{name.slice(0, 28)}</p>
-        <p className="text-[16px] font-[400] text-[#45464F]">
+        <p className="text-[20px] pb-3 font-[500] text-[#DC3545]">{name.slice(0, 28)}</p>
+        <p className="text-[14px] font-[400] text-[#45464F]">
           می خواهم برای کسب کار خود تبلیغ کنم.
         </p>
       </div>

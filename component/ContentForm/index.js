@@ -216,10 +216,20 @@ const ContentForm = (props) => {
         boxShadow: "0px 4px 12px 0px rgba(0, 0, 0, 0.25)",
       }}
     >
+      <Input
+        type="easy"
+        label={"نام کمپین"}
+        classNameInput={`text-black w-full ltr text-end col-span-6`}
+        classNameCard="!w-full"
+        className={`w-full text-black col-span-6`}
+        typeInput="text"
+        placeholder="توضیحات را وارد کنید"
+        value={campaignNameValue}
+        onChange={handleCampaignNameChange}
+      />
+
       {/* Render the dynamic form */}
       <div className="grid grid-cols-12 gap-4">{renderDynamicForm()}</div>
-
-      {/* ... (existing code) */}
     </div>
   );
 };
