@@ -1,27 +1,37 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { useFarsi } from "../../helper/useFarsiDigits";
 
 const InvoicePdf = () => {
   const [data, setData] = useState([]);
+  const [itemData, setItemData] = useState();
+
   const router = useRouter();
   useEffect(() => {
     const createdeCampaign = localStorage.getItem("createdCampaign");
     axios
-      .get(`https://rest.adboost.dev/v1/invoice/${createdeCampaign}`)
+      .get(`${process.env.NEXT_PUBLIC_MAIN_URL_IMG}/v1/invoice/${createdeCampaign}`)
       .then((response) => {
         if (response.data) {
-          setData(response.data);
+          setData(response.data[0]);
         }
         console.log("invoices", response.data);
       });
   }, []);
 
+  useEffect(() => {
+    if (data.items) {
+      setItemData(JSON.parse(data?.items));
+      console.log("JSON.parse(data?.items)", JSON.parse(data?.items));
+    }
+  }, [data]);
+
   return (
     <div className="w-full">
       <div className="flex items-center justify-start py-5">
         <img src="/icons/security.svg" className="!w-[32px] !h-[32px]" />
-        <h3 className=" text-[#001849] font-[500] text-[24px]">جزئیات کمپین</h3>
+        <h3 className=" text-[#001849] font-[500] text-[24px]">صورتحساب</h3>
       </div>
       <div
         className="w-[40%] mx-auto mt-8 bg-[#FEFBFF] rounded-[4px]"
@@ -48,37 +58,54 @@ const InvoicePdf = () => {
             <div className=" flex items-center justify-between gap-x-1 font-[400] text-[#001849]">
               {" "}
               <p className="font-[400] text-[20px] text-[#001849]">صورتحساب</p>
-              <p className="font-[400] text-[20px] text-[#001849]">140/11/11</p>
+              <p className="font-[400] text-[20px] text-[#001849]">{useFarsi(data?.date)}</p>
             </div>
           </div>
 
           <div className="mt-4 ">
-            <div className="flex px-4  border-b pb-5 border-[#C5C6D0]  items-center justify-between">
-              <div className="flex items-center gap-x-24">
-                <p className="text-[14px] text-[#1B1B1F]">شماره</p>
-                <p className="text-[14px]  text-[#1B1B1F]">موضوع</p>
-              </div>
-              <div className="flex items-center gap-x-24">
-                <p className="text-[14px] text-[#1B1B1F] ml-6">قیمت</p>
-                <p className="text-[14px] text-[#1B1B1F]">جمع</p>
-              </div>
-            </div>
-
-            <div className="flex px-4 mt-6 border-b pb-5 border-[#C5C6D0]  items-center justify-between">
-              <div className="flex items-center gap-x-24">
-                <p className="text-[14px] text-[#1B1B1F]">1</p>
-                <p className="text-[14px] w-[40%] text-[#1B1B1F]">
-                  {data.length > 0 && data[0]?.item_name}
-                </p>
-              </div>
-              <div className="flex items-center gap-x-24">
-                <p className="text-[12px] text-[##45464F]">
-                  {data.length > 0 && data[0]?.item_price}
-                </p>
-                <p className="text-[12px] text-[##45464F]">
-                  {data.length > 0 && data[0]?.item_total}
-                </p>
-              </div>
+            <div className="mt-4">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b">
+                    <th className="px-4 py-2 text-start text-[14px] text-[#1B1B1F]">
+                      شماره
+                    </th>
+                    <th className="px-4 py-2 text-start text-[14px] text-[#1B1B1F]">
+                      نام
+                    </th>
+                    <th className="px-4 py-2 text-start text-[14px] text-[#1B1B1F]">
+                      قیمت
+                    </th>
+                    <th className="px-4 py-2 text-start text-[14px] text-[#1B1B1F]">
+                      تعداد
+                    </th>
+                    <th className="px-4 py-2 text-start text-[14px] text-[#1B1B1F]">
+                      قیمت کل
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {itemData?.map((item, key) => (
+                    <tr key={key} className="border-b">
+                      <td className="px-4 py-4 text-start text-[14px] text-[#1B1B1F]">
+                        {useFarsi(key + 1)}
+                      </td>
+                      <td className="px-4 py-2 text-start text-[14px] text-[#1B1B1F]">
+                        {item.item_name}
+                      </td>
+                      <td className="px-4 py-2 text-start text-[12px] text-[#45464F]">
+                        {useFarsi(item.item_price)}
+                      </td>
+                      <td className="px-4 py-2 text-start text-[12px] text-[#45464F]">
+                        {useFarsi(item.item_oty)}
+                      </td>
+                      <td className="px-4 py-2 text-start text-[12px] text-[#45464F]">
+                        {useFarsi(item.item_total)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
 
             <div className="mt-6">
@@ -87,7 +114,7 @@ const InvoicePdf = () => {
                   جمع فرعی
                 </p>
                 <div className="w-full h-[40px] border-b flex items-center px-4 border-b-black rounded-[8px]">
-                  {data.length > 0 && data[0]?.amount} ریال
+                 <p className="w-full text-center text-[20px]"> {useFarsi(data?.amount)} ریال</p>
                 </div>
               </div>
 

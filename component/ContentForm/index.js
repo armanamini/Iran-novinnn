@@ -26,6 +26,7 @@ import axios from "axios";
 const ContentForm = (props) => {
   const [data, setData] = useState();
   const router = useRouter();
+  const [previewImage, setPreviewImage] = useState("");
 
   useEffect(() => {
     if (router.query.id) {
@@ -34,11 +35,10 @@ const ContentForm = (props) => {
           `${process.env.NEXT_PUBLIC_MAIN_URL}campaign-type/custom-form?id=${router.query.id}&type_id=11`
         )
         .then((response) => {
-          setData(JSON.parse(response.data[0]?.options));
-          console.log(
-            "why me ",
-            JSON.parse(JSON.parse(response.data[0]?.options)[0]?.cfo_data)
-          );
+          if (response.data[0]?.options) {
+            setData(JSON.parse(response?.data[0]?.options));
+            console.log("why me ", JSON.parse(response.data[0]?.options));
+          }
         });
     }
   }, [router.query]);
@@ -79,8 +79,14 @@ const ContentForm = (props) => {
     dispatch(updateLinkValue(e.target.value));
   };
 
-  const handleFileChange = (e) => {
-    dispatch(updateFileValue(e.target.value));
+  const handleFileChange = (event) => {
+    const file = event.target.files[0]; // Get the selected file
+    dispatch(updateFileValue(file));
+
+    if (file) {
+      // Update the preview image
+      setPreviewImage(URL.createObjectURL(file));
+    }
   };
 
   const handleProductUsageChange = (e) => {
@@ -129,7 +135,7 @@ const ContentForm = (props) => {
 
   // Parse the cfo_data into an array of objects
   const parsedCfoData = data?.map((item) => JSON.parse(item?.cfo_data));
-  console.log("this is data", parsedCfoData);
+
   // Function to get the input type based on the type_id and token
   const getInputType = (typeId) => {
     const tokenMap = JSON.parse(localStorage.getItem("token")).fieldtypes;
@@ -164,8 +170,8 @@ const ContentForm = (props) => {
                 className={`w-full text-black col-span-6`}
                 typeInput="text"
                 placeholder="توضیحات را وارد کنید"
-                // value={/* Get the value from the Redux store based on the input */}
-                // onChange={/* Provide the relevant change handler */}
+                value={campaignNameValue}
+                onChange={handleCampaignNameChange}
               />
             );
 
@@ -199,7 +205,22 @@ const ContentForm = (props) => {
                 />
               </>
             );
-
+          case "image_input":
+            return (
+              <>
+                <Input
+                  key={formData.id}
+                  type="file"
+                  label={formData.map((item) => item.name)}
+                  classNameInput="text-black  w-full border col-span-12 rounded-[2px] ltr text-end"
+                  className={"w-full col-span-12 text-black"}
+                  typeInput="file"
+                  placeholder="توضیحات را وارد کنید"
+                  // value={fileValue}
+                  onChange={handleFileChange}
+                />
+              </>
+            );
           default:
             return null;
         }
@@ -211,12 +232,12 @@ const ContentForm = (props) => {
 
   return (
     <div
-      className="w-full p-10 bg-white rounded-[4px]"
+      className="w-full p-10 bg-white rounded-[4px] relative"
       style={{
         boxShadow: "0px 4px 12px 0px rgba(0, 0, 0, 0.25)",
       }}
     >
-      <Input
+      {/* <Input
         type="easy"
         label={"نام کمپین"}
         classNameInput={`text-black w-full ltr text-end col-span-6`}
@@ -226,10 +247,20 @@ const ContentForm = (props) => {
         placeholder="توضیحات را وارد کنید"
         value={campaignNameValue}
         onChange={handleCampaignNameChange}
-      />
+      /> */}
 
       {/* Render the dynamic form */}
       <div className="grid grid-cols-12 gap-4">{renderDynamicForm()}</div>
+      {previewImage && (
+        <div className="pt-10"> 
+
+        <img
+          src={previewImage}
+          alt="Preview"
+          className="rounded-[10px] !w-[200px] !h-[200px]"
+        />
+        </div>
+      )}
     </div>
   );
 };

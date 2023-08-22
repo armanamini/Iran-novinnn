@@ -52,10 +52,10 @@ const FlowCard = ({ data, mainId, setStep, index, length }) => {
     return (
       <div
         className={
-          "rounded-[16px] w-[290px] flex flex-col items-center cursor-pointer min-h-[150px] p-10 !h-[290px] border-[#DC3545] border-[1px]"
+          "rounded-[16px] w-[290px] flex flex-col items-center justify-between cursor-pointer min-h-[150px] px-10 py-10 !h-[294px] border-[#DC3545] border-[1px]"
         }
       >
-        <img className="!w-[150px] !h-[150px]" src={parsedData.img} />
+        <img className="!w-[100px] !h-[100px]" src={parsedData.img} />
         <h3 className="w-full py-4 text-center">{parsedData.name}</h3>
         <button
           onClick={() => handleSelect(card.cfo_id)}
@@ -72,28 +72,33 @@ const FlowCard = ({ data, mainId, setStep, index, length }) => {
           "rounded-[16px] w-[290px] flex flex-col items-center justify-between cursor-pointer p-8 min-h-[150px] !h-[290px] border-[#DC3545] border-[1px]"
         }
       >
-        <h3 className="w-full  text-start text-[24px]">{parsedData.name}</h3>
+        <h3 className="w-full  text-center text-[24px]">{parsedData.name}</h3>
         <div className="py-4">
-
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="258"
-          height="2"
-          viewBox="0 0 258 2"
-          fill="none"
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="258"
+            height="2"
+            viewBox="0 0 258 2"
+            fill="none"
           >
-          <path d="M0 1L258 1.00002" stroke="#AEABAB" stroke-linecap="round" />
-        </svg>
-          </div>
-        <p className="text-[#857370] min-h-[64px] ">{parsedData?.description}</p>
+            <path
+              d="M0 1L258 1.00002"
+              stroke="#AEABAB"
+              stroke-linecap="round"
+            />
+          </svg>
+        </div>
+        <p className="text-[#857370] min-h-[64px] ">
+          {parsedData?.description}
+        </p>
         <div className="w-full pt-6">
-        <button
-          onClick={() => handleSelect(card.cfo_id)}
-          className="bg-[#DC3545] py-2 px-4 w-full text-white"
+          <button
+            onClick={() => handleSelect(card.cfo_id)}
+            className="bg-[#DC3545] py-2 px-4 w-full text-white"
           >
-          انتخاب
-        </button>
-          </div>
+            انتخاب
+          </button>
+        </div>
       </div>
     );
   } else {

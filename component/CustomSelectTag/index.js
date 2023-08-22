@@ -2,9 +2,9 @@ import React, { useState } from "react";
 
 const CustomSelect = ({ options, onChange }) => {
   const [selectedOption, setSelectedOption] = useState({
- 
     value: "انتخاب کنید"
   });
+  
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleOptionChange = (event) => {

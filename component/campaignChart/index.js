@@ -1,81 +1,87 @@
 import { useEffect } from "react";
-import * as echarts from 'echarts';
-const EChartsComponent = ({ data }) => {
+import * as echarts from "echarts";
+
+const EChartsComponent = ({ chartData  }) => {
   useEffect(() => {
-    const chartDom = document.getElementById('main');
+    const chartDom = document.getElementById("main");
     const myChart = echarts.init(chartDom);
 
-    const dateList = data?.map(() => {
-      // Generate a random date between 2000-06-05 and 2000-07-24
-      const startDate = new Date('2000-06-05');
-      const endDate = new Date('2000-07-24');
-      const randomDate = new Date(startDate.getTime() + Math.random() * (endDate.getTime() - startDate.getTime()));
-      return randomDate.toLocaleDateString();
-    });
+    if (chartData  && chartData.items) {
+      const reportDates = [];
+      const values = [];
 
-    const valueList = data?.map((item) => item.price);
+      JSON.parse(chartData?.items).forEach((item) => {
+        JSON.parse(item.fields)?.forEach((field) => {
+          if (field.is_report === 2) {
+            reportDates.push(field.report_date);
+            values.push(Number(field.value));
+          }
+        });
+      });
 
-    const option = {
-      // Make gradient line here
-      visualMap: [
-        {
-          show: false,
-          type: 'continuous',
-          seriesIndex: 0,
-          min: valueList ? Math.min(...valueList) :10,
-          max: valueList ? Math.max(...valueList) : 100,
+      const option = {
+        xAxis: {
+          type: "category",
+          data: reportDates,
         },
-       
-      ],
-      title: [
-        {
-          left: 'center',
-          text: 'Gradient along the y axis',
+        yAxis: {
+          type: "value",
+          axisLabel: {
+            formatter: (value) => {
+              if (value >= 1000) {
+                return (
+                  (value / 1000).toLocaleString("en-US", {
+                    maximumFractionDigits: 1,
+                  }) + "k"
+                );
+              }
+              return value.toLocaleString("en-US");
+            },
+          },
         },
-        
-      ],
-      tooltip: {
-        trigger: 'axis',
-      },
-      xAxis: [
-        {
-          data: dateList,
+        graphic: [
+          {
+            type: "rect",
+            left: "center",
+            top: "10%", // Adjust the top position as needed
+            z: -1,
+            shape: {
+              width: "80%", // Adjust the width as needed
+              height: 30,
+            },
+            style: {
+              fill: {
+                type: "linear",
+                colorStops: [
+                  { offset: 0, color: "rgba(0, 255, 255, 1)" },
+                  { offset: 1, color: "transparent" },
+                ],
+              },
+            },
+          },
+        ],
+        tooltip: {
+          trigger: "axis",
+          formatter: "{b}: {c}",
         },
-       
-      ],
-      yAxis: [
-        {},
-        
-      ],
-      grid: [
-        {
-          bottom: '12%',
-        },
-        {
-          top: '60%',
-        },
-      ],
-      series: [
-        {
-          type: 'line',
-          showSymbol: false,
-          data: valueList,
-        },
-      
-      ],
-    };
+        series: [
+          {
+            data: values,
+            type: "line",
+            smooth: true,
+          },
+        ],
+      };
 
-    option && myChart.setOption(option);
+      option && myChart.setOption(option);
+    }
 
-    // Clean up the chart on component unmount
     return () => {
       myChart.dispose();
     };
-  }, [data]);
+  }, [chartData]);
 
-  return <div id="main" style={{ width: '100%', height: '500px' }}></div>;
+  return <div id="main" style={{ width: "100%", height: "500px" }}></div>;
 };
 
-
 export default EChartsComponent;
-

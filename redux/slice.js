@@ -14,6 +14,7 @@ const initialState = {
   campaignStartTimeValue: '',
   campaignEndTimeValue: '',
   publicationNotesValue: '',
+  totalPriceOfItemsValue: '',
 };
 
 const inputSlice = createSlice({
@@ -22,6 +23,9 @@ const inputSlice = createSlice({
   reducers: {
     updateTextareaValue: (state, action) => {
       state.textareaValue = action.payload;
+    },
+    updatetotalPriceOfItemsValue:(state, action)=>{
+      state.totalPriceOfItemsValue = action.payload;
     },
     updateLinkValue: (state, action) => {
       state.linkValue = action.payload;
@@ -76,6 +80,7 @@ export const {
   updateCampaignStartTimeValue,
   updateCampaignEndTimeValue,
   updatePublicationNotesValue,
+  updatetotalPriceOfItemsValue
 } = inputSlice.actions;
 
 export default inputSlice.reducer;

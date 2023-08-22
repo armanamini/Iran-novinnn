@@ -13,12 +13,12 @@ const CampaignLayout = ({ children }) => {
           className={
             openSideBar
               ? "h-screen col-span-2  xl:col-span-3 !lg:absolute sm:absolute sm:w-full duration-[1000] sm:z-20 transition-transform sm:bg-white"
-              : "h-screen col-span-2  xl:col-span-3 lg:hidden "
+              : "h-screen col-span-2 border-l xl:col-span-3 lg:hidden "
           }
         >
           <div className="p-6 ">
             <div
-              className="text-[#1890FF] pt-2 text-[20px] font-bold !font-Roboto mx-auto flex flex-col items-center justify-center gap-y-2 "
+              className="text-[#1890ff] pt-2 text-[20px] font-bold !font-Roboto mx-auto flex flex-col items-center justify-center gap-y-2 "
               style={{
                 fontFamily: "Roboto",
               }}
@@ -78,8 +78,8 @@ const CampaignLayout = ({ children }) => {
               <p className="text-[16px] font-[500] text-[#DC3545]">
                 موجودی: ۱/۰۰۰/۰۰۰- تومان
               </p>
-              <div className="bg-[#FFD2D6] px-6 h-[40px] flex items-center justify-center rounded-[2px]">
-                <p className="text-[#DC3545] text-[14px] font-[500]">
+              <div className="bg-[#17594A] rounded-[4px] px-6 h-[40px] flex items-center justify-center">
+                <p className="text-white text-[14px] font-[500]">
                   افزایش موجودی
                 </p>
               </div>
@@ -87,7 +87,6 @@ const CampaignLayout = ({ children }) => {
                 src="/icons/notifications.svg"
                 className="!w-[32px] !h-[32px]"
               />
-
               <Avatar size={40} className="!left-0 bg-[#FEF9F9]">
                 <div className="flex items-center justify-center !w-full">
                   <p className="text-center font-[40px] !text-[#DC3545]">A</p>
@@ -95,7 +94,7 @@ const CampaignLayout = ({ children }) => {
               </Avatar>
             </div>
           </div>
-          <div className="max-w-[100rem] bg-[#FDFBFF] h-screen mx-auto">
+          <div className="max-w-[100rem] bg-[#FDFBFF] min-h-screen max-h-auto mx-auto">
             {children}
           </div>
         </div>

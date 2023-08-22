@@ -10,17 +10,16 @@ import { useEffect, useState } from "react";
 
 function getItem(label, key, icon, children, type, link) {
   return {
-    label, key, icon, children, type, link
+    label,
+    key,
+    icon,
+    children,
+    type,
+    link,
   };
 }
 
 const items = [
-  getItem("کاربران", "sub1", <MailOutlined />, [
-    getItem("بدون دیتا", "sub1-1"),
-    getItem("زیر 2", "sub1-2"),
-    getItem("زیر 3", "sub1-3"),
-    getItem("زیر 4", "sub1-4"),
-  ]),
   getItem(
     "کمپین",
     "sub2",
@@ -40,18 +39,20 @@ const items = [
     "",
     "/campaign"
   ),
-  getItem("سطوح دسترسی", "sub4", <SettingOutlined />),
-  getItem("کمپین تایپ ها", "sub5", <SettingOutlined />),
-  getItem("کمپین آیتم ها", "sub6", <SettingOutlined />),
-  getItem("کمپین کاستوم فیلدها", "sub7", <SettingOutlined />),
-  getItem("فاکتورها", "sub8", <SettingOutlined />),
+
   // getItem("پشتیبانی", "sub9", <SettingOutlined />, "", "", "/support"),
+  getItem(<Link href="/support">پشتیبانی</Link>, "link", <SettingOutlined />),
+
   getItem(
-    <Link href="/support">
-     پشتیبانی
-    </Link>,
-    'link',
-    <SettingOutlined />,
+    <Link href="/mediaSubmition">ثبت رسانه</Link>,
+    "mediaSubmition",
+    <SettingOutlined />
+  ),
+
+  getItem(
+    <Link href="/mediaList">لیست رسانه ها</Link>,
+    "mediaList",
+    <SettingOutlined />
   ),
 ];
 

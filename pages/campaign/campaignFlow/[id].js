@@ -35,18 +35,19 @@ const CampaignFlow = () => {
   useEffect(() => {
     if (router.query.id) {
       axios
-        .get(`https://rest.adboost.dev/v1/campaign-type/${router.query.id}`)
+        .get(
+          `${process.env.NEXT_PUBLIC_MAIN_URL}campaign-type/fields?id=${router.query.id}`
+        )
         .then((response) => {
           if (response?.data?.data?.before_item_flow) {
             setFlow(JSON.parse(response?.data?.data?.before_item_flow));
+              }
             localStorage.setItem(
               "campaign-type",
               response?.data?.data?.type_mode
             );
             console.log("flowww", response.data.data);
-          } else {
-            toast.error("دیتایی وجود ندارد");
-          }
+      
         });
     }
   }, [router.query]);
@@ -55,7 +56,7 @@ const CampaignFlow = () => {
     if (router.query.id) {
       axios
         .get(
-          `https://rest.adboost.dev/v1f/campaign-type/details?id=${router.query.id}`
+          `${process.env.NEXT_PUBLIC_MAIN_URL}campaign-type/details?id=${router.query.id}`
         )
         .then((response) => {
           setData(response.data);
@@ -105,8 +106,8 @@ const CampaignFlow = () => {
       ...provided,
       display: "block", // hide the dropdown chevron
     }),
-    
   };
+
   const handleSentSelect = (e) => {
     const selectedOption = JSON.parse(e.target.value);
     // setSelected([selectedOption]);
@@ -190,8 +191,8 @@ const CampaignFlow = () => {
                             const arr = parsedOptions.map((element) => ({
                               mainCustomFiledId: currentLatestItem.id,
                               selectedid: element.cfo_id,
-                              label: element.cfo_name,
-                              value: element.cfo_data,
+                              label: element.cfo_name || " ",
+                              value: element.cfo_data || " ",
                             }));
 
                             return (

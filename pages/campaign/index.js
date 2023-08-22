@@ -21,6 +21,27 @@ const Campaign = () => {
     return colors[index];
   }
 
+  const removeLocalStorageDataExceptToken = () => {
+    const tokenKey = "token";
+    const token = localStorage.getItem(tokenKey); // Get the token
+
+    for (let key in localStorage) {
+      if (key !== tokenKey) {
+        localStorage.removeItem(key); // Remove items except the token
+      }
+    }
+
+    // Set the token back after clearing other items
+    if (token) {
+      localStorage.setItem(tokenKey, token);
+    }
+  };
+
+  useEffect(() => {
+    removeLocalStorageDataExceptToken();
+  }, []); // Run this effect only once, on component mount
+
+
   return (
     <CampaignLayout>
       <div className="bg-[#FDFBFF] h-full min-h-screen mt-[1px]  p-10">

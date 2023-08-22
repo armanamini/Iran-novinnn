@@ -4,6 +4,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { GoChevronRight, GoChevronLeft } from "react-icons/go";
 
 const Table = ({ data }) => {
+
+
+
+  console.log("data",data);
+
+
   const router = useRouter();
   const filteredData = data?.campaigns;
   const visiblePageNumbers = Array.from(
