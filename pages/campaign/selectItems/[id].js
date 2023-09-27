@@ -20,7 +20,17 @@ import SwiperITems from "../../../component/SwiperSelectItem";
 import { useFarsi } from "../../../helper/useFarsiDigits";
 import { useRef } from "react";
 import { useSelector } from "react-redux";
-// import MultiRangeSlider from "multi-range-slider-react";
+import { Select } from "chakra-react-select";
+import InfiniteScroll from "react-infinite-scroll-component";
+import CustomSelectCategory from "../../../component/CustomSelectCategory";
+
+if (typeof window !== "undefined") {
+  const local = localStorage.getItem("campaign-type");
+  if (local == undefined) {
+    toast.warning("مقدار تایپ معتبر نمی باشد");
+    window.location.href = "/campaign";
+  }
+}
 
 const CampaignFlow = () => {
   const router = useRouter();
@@ -29,6 +39,7 @@ const CampaignFlow = () => {
   const totalPriceOfItemsValue = useSelector(
     (state) => state.input.totalPriceOfItemsValue
   );
+
   const [page, setPage] = useState(1); // Initial page number
   const [loading, setLoading] = useState(false);
   const [newItemState, setNewItemState] = useState();
@@ -48,8 +59,10 @@ const CampaignFlow = () => {
   const [maxFollower, setMaxFollower] = useState();
   const [mainValueRange, setMainValueRange] = useState();
   const [mainValueRangePrice, setMainValueRangePrice] = useState();
-
-  const sliderFollowerRef = useRef();
+  const [selectedSortOption, setSelectedSortOption] = useState(); // Initialize with an empty string
+  const [customForm, setCustomForm] = useState(); // Initialize with an empty string
+  const [banner, setCustomBanner] = useState(); // Initialize with an empty string
+  const [arrBanner, setArrBanner] = useState();
 
   const handleInputChange = (e) => {
     const inputId = e.target.id;
@@ -73,13 +86,15 @@ const CampaignFlow = () => {
     }));
   };
 
-  const handleSelectChange = (itemId, selectedValue) => {
+  const handleSelectChange = (itemId, selectedValues) => {
     setSelectFilterState((prevState) => ({
       ...prevState,
-      [itemId]: selectedValue,
+      [itemId]: selectedValues,
     }));
   };
-
+  const handleChange = (selectedOption) => {
+    setSelectedSortOption(selectedOption.id);
+  };
   const fetchData = useCallback(
     async (value) => {
       try {
@@ -90,29 +105,40 @@ const CampaignFlow = () => {
           .join("&");
 
         const selectFilterParams = Object.keys(selectFilterState)
-          .filter((itemId) => selectFilterState[itemId])
-          .map((itemId) => `field[${itemId}]=${selectFilterState[itemId]}`)
+          .filter(
+            (itemId) =>
+              selectFilterState[itemId] && selectFilterState[itemId].length > 0
+          )
+          .map((itemId) => {
+            const selectedValues = selectFilterState[itemId].map(
+              (selectedItem) => selectedItem.id
+            );
+            return `field[${itemId}]=${selectedValues.join(",")}`;
+          })
           .join("&");
 
+        const sortParam = selectedSortOption
+          ? `&sort-by=${selectedSortOption}`
+          : "";
+
+        console.log("sortParam", sortParam);
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_MAIN_URL}campaign-type/items?page=${
             value ? "1" : page
-          }&id=${router.query.id}&price=${value}${
-            followerRange && `&follower=${followerRange}`
-          }&search=${searchData}&${filterParams}&${selectFilterParams}`
+          }&id=${router.query.id}${value ? `&price=${value}` : ""}${
+            followerRange ? `&follower=${followerRange}` : ""
+          }&search=${searchData}&${filterParams}&${selectFilterParams}${sortParam}`
         );
 
         if (response.status === 200) {
           if (value) {
             setData(response.data.campaignItems);
-            setPaginate(response.data.pagination);
           } else if (searchData != "") {
             setData(response.data.campaignItems);
-            setPaginate(response.data.pagination);
           } else if (selectFilterParams != "") {
             setData(response.data.campaignItems);
-
-            setPaginate(response.data.pagination);
+          } else if (selectedSortOption != "") {
+            setData(response.data.campaignItems);
           } else if (followerRange != "") {
             setData(response.data.campaignItems);
           } else {
@@ -141,6 +167,7 @@ const CampaignFlow = () => {
       filterState,
       selectFilterState,
       followerRange,
+      selectedSortOption,
     ]
   );
 
@@ -175,127 +202,78 @@ const CampaignFlow = () => {
     setStep(step - 1);
   }, [step]);
 
-  const StepOneComponent = () => {
-    return (
-      <div className="relative w-1/3 h-screen">
-        <div className="mt-10 xl:hidden ">
-          <div className="ml-auto w-[90%] bg-white h-screen">
-            {filterType?.map((item) => {
-              if (item.is_filter == 1) {
-                switch (localType[item.type_id]) {
-                  case "check box":
-                    return (
-                      <div className="flex p-4 pt-10 gap-x-4" key={item.id}>
-                        <Switch
-                          defaultChecked={filterState[item.id]}
-                          onChange={() => handleSwitchChange(item.id)}
-                          className="bg-[#8C8C8C]"
-                        />
-                        <p className="text-[16px] font-semibold">{item.name}</p>
-                      </div>
-                    );
-                  case "select single":
-                    const options = JSON.parse(item.options).map((element) => ({
-                      id: element.cfo_id,
-                      value: element.cfo_name,
-                      label: element.cfo_data,
-                    }));
+  const customStyles = {
+    control: (provided) => ({
+      ...provided,
+      borderRadius: "2px ",
+      borderColor: "gray.300",
+      "&:hover": {
+        borderColor: "gray.400",
+      },
+    }),
 
-                    return (
-                      <div className="mt-4 " key={item.id}>
-                        <CustomSelect
-                          label={item.name}
-                          options={options}
-                          value={selectFilterState[item.id]}
-                          onChange={(selectedValue) =>
-                            handleSelectChange(item.id, selectedValue)
-                          }
-                          selectedOptionId={(id) => setSelectedOptionId(id)}
-                        />
-                      </div>
-                    );
-
-                  case "radio":
-                    return (
-                      <div>
-                        <p className="p-2">نوع تعرفه</p>
-                        <div className="flex items-center justify-center gap-3 p-2">
-                          <input
-                            type="checkbox"
-                            className="w-5 h-5 form-checkbox !outline-[#D9D9D9]"
-                          />
-                          <span className="text-[#00000040]">کسب و کار</span>
-                        </div>
-                      </div>
-                    );
-
-                  default:
-                    break;
-                }
-              }
-            })}
-
-            <div>
-              <div className="px-4 py-10 ">
-                <p className="pb-3">بازه قیمت (تومان)</p>
-
-                <RangeSlider
-                  defaultValue={mainValueRangePrice}
-                  onChangeEnd={(value) => {
-                    if (value) {
-                      setMainValueRangePrice(value);
-                      fetchData(value);
-                    }
-                  }}
-                >
-                  <RangeSliderTrack>
-                    <RangeSliderFilledTrack />
-                  </RangeSliderTrack>
-                  <RangeSliderThumb index={0} />
-                  <RangeSliderThumb index={1} />
-                </RangeSlider>
-
-                <div>
-                  <p className="text-end text-[#00000040]">100 میلیون</p>
-                </div>
-                <div className="w-full text-[#00000040] ">از 2000 تا 40000</div>
-              </div>
-
-              <div className="px-4">
-                <p className="pb-3"> بازه فالوئر (نفر) </p>
-
-                <RangeSlider
-                  min={0}
-                  max={Math.floor(maxFollower)}
-                  defaultValue={followerRange}
-                  onChangeEnd={(e) => {
-                    if (e) {
-                      setFollowerRange([Math.floor(e[0]), Math.floor(e[1])]);
-                    }
-                  }}
-                >
-                  <RangeSliderTrack>
-                    <RangeSliderFilledTrack />
-                  </RangeSliderTrack>
-                  <RangeSliderThumb index={0} />
-                  <RangeSliderThumb index={1} />
-                </RangeSlider>
-
-                <div>
-                  <p className="text-end text-[#00000040]">100 میلیون</p>
-                </div>
-                <div className="w-full text-[#00000040]">
-                  از {followerRange ? followerRange[0] * 100 : 0} تا{" "}
-                  {followerRange ? followerRange[1] * 100 : maxFollower}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      display: "block", // hide the dropdown chevron
+    }),
   };
 
+  const handleSendCard = () => {
+    if (JSON.parse(localStorage.getItem("items")) != []) {
+      try {
+        const url = `${process.env.NEXT_PUBLIC_MAIN_URL}campaign-type/custom-form?id=${router.query.id}&type_id=11`;
+
+        const data = {
+          items: JSON.parse(localStorage.getItem("items")),
+        };
+
+        axios
+          .post(url, {
+            ...data,
+          })
+          .then((response) => {
+            console.log(
+              "response",
+              JSON.parse(response.data.custom_form.options)
+            );
+            setCustomForm(JSON.parse(response.data.custom_form.options));
+            setCustomBanner(response.data.item_banners);
+          });
+
+        handleNextStep();
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
+  };
+
+  const arrCumstom = [
+    {
+      id: "price-DESC",
+      label: "بیشترین قیمت",
+      value: "بیشترین قیمت",
+    },
+    {
+      id: "price-ASC",
+      label: "کمترین قیمت",
+      value: "کمترین قیمت",
+    },
+    {
+      id: "DESC",
+      label: "جدید ترین",
+      value: "جدید ترین",
+    },
+    {
+      id: "ASC",
+      label: "قدیمی ترین",
+      value: "قدیمی ترین",
+    },
+  ];
+  
+  const selectedBanner = (e) => {
+    console.log("sadjhsadbsadsadsadsa", e);
+    setArrBanner(e);
+  };
   return (
     <div className="mx-auto ">
       <CampaignLayout>
@@ -311,50 +289,218 @@ const CampaignFlow = () => {
                     <SwiperITems data={data} />
                   </div>
                   <div className="flex h-full">
-                  <StepOneComponent />
-                  <div
-                    style={{
-                      boxShadow: "0px 4px 12px 0px rgba(0, 0, 0, 0.25)",
-                    }}
-                    className="col-span-9 bg-white xl:col-span-12 w-full rounded-[8px] mt-10"
-                  >
-                    <div>
-                      <div className="grid justify-between grid-cols-12 px-7">
-                        <div className="flex col-span-6 gap-2 p-5">
-                          <input
-                            onChange={(e) => {
-                              setTimeout(() => {
-                                setSearchData(e.target.value);
-                              }, 2000);
-                            }}
-                            placeholder={"جستجو"}
-                            type="text"
-                            className={`border-[#D9D9D9] !border !rounded-[4px] outline-none w-full py-2 placeholder:!text-[#C5C6D0] placeholder:p-5`}
-                          />
+                    {/* <StepOneComponent /> */}
 
-                          <input
-                            placeholder={"مرتب سازی بر اساس..."}
-                            type="text"
-                            className={`border-[#D9D9D9]  !border !rounded-[4px] outline-none w-full py-2 placeholder:!text-[#C5C6D0] placeholder:p-5`}
-                          />
-                        </div>
+                    <div className="relative w-1/3 h-screen">
+                      <div className="mt-10 xl:hidden ">
+                        <div className="ml-auto w-[90%] bg-white h-screen">
+                          {filterType?.map((item) => {
+                            if (item.is_filter == 1) {
+                              switch (localType[item.type_id]) {
+                                case "check box":
+                                  return (
+                                    <div
+                                      className="flex p-4 pt-10 gap-x-4"
+                                      key={item.id}
+                                    >
+                                      <Switch
+                                        defaultChecked={filterState[item.id]}
+                                        onChange={() =>
+                                          handleSwitchChange(item.id)
+                                        }
+                                        className="bg-[#8C8C8C]"
+                                      />
+                                      <p className="text-[16px] font-semibold">
+                                        {item.name}
+                                      </p>
+                                    </div>
+                                  );
+                                case "select multi":
+                                  const options = JSON.parse(item.options).map(
+                                    (element) => ({
+                                      id: element.cfo_id,
+                                      value: element.cfo_name,
+                                      label: element.cfo_data,
+                                    })
+                                  );
 
-                        <div className="grid grid-cols-12 col-span-6 p-5 ">
-                          <input
-                            placeholder={"دانلود اکسل پلن های انتخابی"}
-                            type="text"
-                            className={`border-[#D9D9D9] col-start-13 col-end-7  !border !rounded-[4px] outline-none w-full py-2 placeholder:!text-[#C5C6D0] placeholder:p-5`}
-                          />
+                                  return (
+                                    <div className="relative z-40 p-4">
+                                      <Select
+                                        key={item.id}
+                                        isMulti
+                                        DropdownIndicator={true}
+                                        options={options}
+                                        styles={customStyles}
+                                        placeholder="آپشن انتخاب کنید"
+                                        onChange={(selectedValue) => {
+                                          console.log(
+                                            "selectedValues",
+                                            selectedValue
+                                          );
+
+                                          handleSelectChange(
+                                            item.id,
+                                            selectedValue
+                                          );
+                                        }}
+                                        components={{
+                                          DropdownIndicator: () => null,
+                                        }}
+                                      />
+                                    </div>
+                                  );
+
+                                case "radio":
+                                  return (
+                                    <div>
+                                      <p className="p-2">نوع تعرفه</p>
+                                      <div className="flex items-center justify-center gap-3 p-2">
+                                        <input
+                                          type="checkbox"
+                                          className="w-5 h-5 form-checkbox !outline-[#D9D9D9]"
+                                        />
+                                        <span className="text-[#00000040]">
+                                          کسب و کار
+                                        </span>
+                                      </div>
+                                    </div>
+                                  );
+
+                                default:
+                                  break;
+                              }
+                            }
+                          })}
+
+                          <div>
+                            <div className="px-4 py-10 ">
+                              <p className="pb-3">بازه قیمت (تومان)</p>
+
+                              <RangeSlider
+                                min={0}
+                                defaultValue={mainValueRangePrice}
+                                onChangeEnd={(value) => {
+                                  if (value) {
+                                    setMainValueRangePrice(value);
+                                    fetchData(value);
+                                  }
+                                }}
+                              >
+                                <RangeSliderTrack>
+                                  <RangeSliderFilledTrack />
+                                </RangeSliderTrack>
+                                <RangeSliderThumb index={0} />
+                                <RangeSliderThumb index={1} />
+                              </RangeSlider>
+
+                              <div>
+                                <p className="text-end text-[#00000040]">
+                                  100 میلیون
+                                </p>
+                              </div>
+                              <div className="w-full text-[#00000040] ">
+                                از 2000 تا 40000
+                              </div>
+                            </div>
+                            <div className="px-4">
+                              <p className="pb-3"> بازه فالوئر (نفر) </p>
+                              <RangeSlider
+                                min={0}
+                                max={Math.floor(maxFollower)}
+                                defaultValue={[0, 30000]}
+                                onChangeEnd={(e) => {
+                                  if (e) {
+                                    setFollowerRange([
+                                      Math.floor(e[0]),
+                                      Math.floor(e[1]),
+                                    ]);
+                                  }
+                                }}
+                              >
+                                <RangeSliderTrack>
+                                  <RangeSliderFilledTrack />
+                                </RangeSliderTrack>
+                                <RangeSliderThumb index={0} />
+                                <RangeSliderThumb index={1} />
+                              </RangeSlider>
+                              <div className="flex flex-row-reverse justify-between w-full">
+                                <p className="text-end text-[#00000040]">
+                                  {followerRange ? followerRange[0] * 100 : 0}
+                                </p>
+                                <p className="text-end text-[#00000040]">
+                                  {followerRange
+                                    ? followerRange[1] * 100
+                                    : Math.floor(maxFollower) * 100}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    {/* end of stepComponent */}
+                    <div
+                      style={{
+                        boxShadow: "0px 4px 12px 0px rgba(0, 0, 0, 0.25)",
+                      }}
+                      className="col-span-9 bg-white xl:col-span-12 w-full rounded-[8px] mt-10"
+                    >
+                      <div>
+                        <div className="grid justify-between grid-cols-12 px-7">
+                          <div className="flex col-span-6 gap-2 p-5">
+                            <input
+                              onChange={(e) => {
+                                setSearchData(e.target.value);
+                              }}
+                              placeholder={"جستجو"}
+                              type="text"
+                              className={`border-[#D9D9D9] !border h-[130%] !rounded-[4px] outline-none w-full py-2 placeholder:!text-[#C5C6D0] placeholder:p-5`}
+                            />
 
-                    <div className="relative grid grid-cols-12 gap-2 p-4 px-8 sm:px-2 md:px-4 lg:px-6">
-                      {data.map((item, index) => (
-                        <CampaignCards key={item.id} data={item} />
-                      ))}
+                            <div
+                              className={` relative !rounded-[4px] outline-none w-full py-2 placeholder:!text-[#C5C6D0] placeholder:p-5`}
+                            >
+                              <div className="absolute top-0 z-10 w-full h-[130%]  border-[#D9D9D9] border">
+                                <CustomSelect
+                                  options={arrCumstom}
+                                  value={selectedSortOption}
+                                  label={" دسته بندی بر اساس"}
+                                  onChange={(e) => setSelectedSortOption(e)}
+                                  selectedOptionId={(e) =>
+                                    setSelectedSortOption(e)
+                                  }
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-12 col-span-6 p-5 ">
+                            <input
+                              placeholder={"دانلود اکسل پلن های انتخابی"}
+                              type="text"
+                              className={`border-[#D9D9D9] col-start-13 col-end-7  !border !rounded-[4px] outline-none w-full py-2 placeholder:!text-[#C5C6D0] placeholder:p-5`}
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <InfiniteScroll
+                        dataLength={data.length}
+                        next={() => {
+                          setPage((prevPage) => prevPage + 1);
+                        }}
+                        hasMore={!loading}
+                        scrollThreshold={1}
+                        loader={<h4>Loading...</h4>}
+                        endMessage={<p>No more campaigns to load.</p>}
+                        className="relative grid grid-cols-12 gap-2 p-4 px-8 sm:px-2 md:px-4 lg:px-6"
+                      >
+                        {data.map((item, index) => (
+                          <CampaignCards key={item.id} data={item} />
+                        ))}
+                      </InfiniteScroll>
                     </div>
-                  </div>
                   </div>
 
                   <div
@@ -365,7 +511,13 @@ const CampaignFlow = () => {
                     <div className="flex w-[100%] gap-2 flex-row-reverse">
                       <button
                         className="px-4 py-2 font-bold w-fit text-white rounded bg-[#DC3545]"
-                        onClick={handleNextStep}
+                        onClick={() => {
+                          if (localStorage.getItem("campaign-type") == 3) {
+                            handleSendCard();
+                          } else {
+                            handleNextStep();
+                          }
+                        }}
                       >
                         ادامه
                       </button>
@@ -380,7 +532,11 @@ const CampaignFlow = () => {
                     {step == 1 && (
                       <div className="w-full">
                         <p className="text-[23px]">
-                          مجموع: {useFarsi(totalPriceOfItemsValue)} تومان
+                          مجموع:{" "}
+                          {totalPriceOfItemsValue
+                            ? useFarsi(totalPriceOfItemsValue)
+                            : "0"}{" "}
+                          تومان
                         </p>
                       </div>
                     )}
@@ -398,14 +554,18 @@ const CampaignFlow = () => {
                   </div>
 
                   <div className="flex items-center justify-center w-full pb-4">
-                    <ContentForm />
+                    <ContentForm
+                      customForm={customForm}
+                      banner={banner}
+                      selectedBanner={selectedBanner}
+                    />
                   </div>
                 </>
               )}
               {step == 3 && (
                 <div className="flex items-center justify-center w-full gap-4 pb-4 px-30">
                   <CamapignDetail
-                    // totalPrice={totalPrice}
+                    arrBanner={arrBanner}
                     step={true}
                     setStep={(e) => {
                       setStep(e);
@@ -413,6 +573,7 @@ const CampaignFlow = () => {
                   />
                 </div>
               )}
+
               {step == 4 && (
                 <div className="flex items-center justify-center w-full gap-4 pb-4 px-30">
                   <InvoicePdf />

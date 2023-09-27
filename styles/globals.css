@@ -334,3 +334,11 @@ span.ant-menu-title-content > a {
 #react-select-2-live-region {
   display: none;
 }
+
+#react-select-12-live-region{
+  display: none;
+}
+
+.invalid-input {
+  border: 1px solid red;
+}

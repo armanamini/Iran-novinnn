@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-const CustomSelect = ({ label, options, value, onChange,selectedOptionId   }) => {
+const CustomSelect = ({
+  label,
+  options,
+  value,
+  onChange,
+  selectedOptionId,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -10,8 +16,7 @@ const CustomSelect = ({ label, options, value, onChange,selectedOptionId   }) =>
   const handleOptionClick = (option) => {
     setIsOpen(false);
     onChange(option.id);
-
-    selectedOptionId(option.id)
+    selectedOptionId(option.id);
   };
 
   const selectedOption = options.find((option) => option.id === value);

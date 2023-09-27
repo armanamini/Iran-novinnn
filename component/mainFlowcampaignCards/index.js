@@ -22,9 +22,6 @@ const CampaignCards = ({ data, updateTotalPrice }) => {
   const storedItems = localStorage?.getItem("items");
   const initialItems = storedItems ? JSON.parse(storedItems) : [];
   const isItemSelected = initialItems.some((item) => item.id == data.id);
- 
-
-
 
   useEffect(() => {
     setCustomField(JSON.parse(data.extra_option_price));
@@ -38,7 +35,7 @@ const CampaignCards = ({ data, updateTotalPrice }) => {
 
   useEffect(() => {
     const campaignType = localStorage.getItem("campaign-type");
-    const matchingConfigItem = config.find((item) =>
+    const matchingConfigItem = config?.find((item) =>
       item.hasOwnProperty(campaignType)
     );
 
@@ -82,6 +79,7 @@ const CampaignCards = ({ data, updateTotalPrice }) => {
     const newItem = {
       id: data.id,
       options: selectedOptionsTotal > 0 ? selectedOptionsTotal : [],
+      quantity: 1,
     };
 
     const existingIndex = updatedItems.findIndex((item) => item.id === data.id);
@@ -133,7 +131,6 @@ const CampaignCards = ({ data, updateTotalPrice }) => {
         0
       );
       dispatch(updatetotalPriceOfItemsValue(totalPrice));
-      
     }
   }, [handleId]);
 
@@ -159,6 +156,7 @@ const CampaignCards = ({ data, updateTotalPrice }) => {
         name: option.label,
         price: option.price,
       })),
+      quantity: 1,
     };
 
     const index = updatedItems.findIndex((item) => item.id === data.id);

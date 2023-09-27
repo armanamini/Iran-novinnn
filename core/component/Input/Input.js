@@ -24,6 +24,7 @@ const Input = ({
   required,
   classNameCard,
   checked,
+  multiple 
 }) => {
   const [isPassword, setIspassword] = useState(false);
 
@@ -107,6 +108,8 @@ const Input = ({
               className={`${classNameInput} !border border-[#D9D9D9] !rounded-[2px] outline-none w-full`}
               name={name}
               hidden
+              multiple={multiple}
+              required={required}
             />
           </div>
         </div>

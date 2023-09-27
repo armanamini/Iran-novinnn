@@ -8,66 +8,81 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
-function getItem(label, key, icon, children, type, link) {
-  return {
-    label,
-    key,
-    icon,
-    children,
-    type,
-    link,
-  };
-}
-
-const items = [
-  getItem(
-    "کمپین",
-    "sub2",
-    <AppstoreOutlined />,
-    [
-      getItem("کمپین", "sub2-1", "", "", "", "/campaign"),
-      getItem(
-        "لیست کمپین ها",
-        "sub2-6",
-        "",
-        "",
-        "",
-        "/campaign/campaignList?page=1"
-      ),
-    ],
-    "",
-    "",
-    "/campaign"
-  ),
-
-  // getItem("پشتیبانی", "sub9", <SettingOutlined />, "", "", "/support"),
-  getItem(<Link href="/support">پشتیبانی</Link>, "link", <SettingOutlined />),
-
-  getItem(
-    <Link href="/mediaSubmition">ثبت رسانه</Link>,
-    "mediaSubmition",
-    <SettingOutlined />
-  ),
-
-  getItem(
-    <Link href="/mediaList">لیست رسانه ها</Link>,
-    "mediaList",
-    <SettingOutlined />
-  ),
-];
-
-const rootSubmenuKeys = [
-  "sub1",
-  "sub2",
-  "sub4",
-  "sub5",
-  "sub6",
-  "sub7",
-  "sub8",
-  "sub9",
-];
-
 const SubMenuItems = () => {
+  const [dataItems, setDataItem] = useState();
+  function getItem(label, key, icon, children, type, link) {
+    return {
+      label,
+      key,
+      icon,
+      children,
+      type,
+      link,
+    };
+  }
+
+  const items = [
+    getItem(
+      "کمپین",
+      "sub2",
+      <AppstoreOutlined />,
+      [
+        getItem("کمپین", "sub2-1", "", "", "", "/campaign"),
+        getItem(
+          "لیست کمپین ها",
+          "sub2-6",
+          "",
+          "",
+          "",
+          "/campaign/campaignList?page=1"
+        ),
+      ],
+      "",
+      "",
+      "/campaign"
+    ),
+
+    // getItem("پشتیبانی", "sub9", <SettingOutlined />, "", "", "/support"),
+    getItem(<Link href="/support">پشتیبانی</Link>, "link", <SettingOutlined />),
+
+    getItem(
+      <Link href="/mediaSubmition">ثبت رسانه</Link>,
+      "mediaSubmition",
+      <SettingOutlined />
+    ),
+
+    getItem(
+      <Link href="/mediaList">لیست رسانه ها</Link>,
+      "mediaList",
+      <SettingOutlined />
+    ),
+
+    getItem(
+      <Link href="/createBanner"> ثبت جایگاه تبلیغ</Link>,
+      "createBanner",
+      <SettingOutlined />
+    ),
+  ];
+
+  useEffect(() => {
+    const role = JSON.parse(localStorage.getItem("user_Role")) != "3";
+    if (role) {
+      items.map((data) => {
+        const newArr = items.filter(
+          (item) => item.key !== "mediaSubmition" && item.key !== "mediaList"
+        );
+        setDataItem(newArr);
+      });
+    } else if (JSON.parse(localStorage.getItem("user_Role")) != "2") {
+      items.map((data) => {
+        const newArr = items.filter((item) => item.key !== "createBanner");
+        setDataItem(newArr);
+      });
+    } else {
+      setDataItem(items);
+    }
+  }, []);
+
   const router = useRouter();
   const [openKeys, setOpenKeys] = useState([]);
   const [activeKeys, setActiveKeys] = useState([]);
@@ -143,8 +158,8 @@ const SubMenuItems = () => {
         border: "none",
       }}
     >
-      {items.map((item) =>
-        item.children ? (
+      {dataItems?.map((item) =>
+        item?.children ? (
           <Menu.SubMenu key={item.key} icon={item.icon} title={item.label}>
             {item.children.map((child) => renderMenuItem(child))}
           </Menu.SubMenu>

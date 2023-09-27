@@ -12,8 +12,8 @@ const CampaignLayout = ({ children }) => {
         <div
           className={
             openSideBar
-              ? "h-screen col-span-2  xl:col-span-3 !lg:absolute sm:absolute sm:w-full duration-[1000] sm:z-20 transition-transform sm:bg-white"
-              : "h-screen col-span-2 border-l xl:col-span-3 lg:hidden "
+              ? "h-screen col-span-2 xl:col-span-3 !lg:absolute sm:absolute sm:w-full duration-[1000] sm:z-20 transition-transform sm:bg-white"
+              : "h-screen col-span-2 border-l xl:col-span-3 lg:hidden bg-white"
           }
         >
           <div className="p-6 ">

@@ -1,5 +1,6 @@
 [{
- "1":[{"propertyName2":4},{"propertyName3":1}],
- "2":[{"propertyName2":4},{"propertyName3":1}]
+ "2":[{"propertyName2":4},{"propertyName3":1}],
+ "4":[{"propertyName2":4},{"propertyName3":1},{"domain":18},{"siteName":21}],
+ "3":[{"propertyName2":4},{"propertyName3":1},{"domain":18},{"siteName":21}]
 }
 ]

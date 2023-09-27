@@ -25,6 +25,7 @@
     "chakra-react-select": "^4.6.0",
     "echarts": "^5.4.3",
     "firebase": "^9.23.0",
+    "formik": "^2.4.3",
     "js-cookie": "^3.0.5",
     "lodash.debounce": "^4.0.8",
     "moment-jalaali": "^0.10.0",
@@ -36,6 +37,7 @@
     "react": "18.2.0",
     "react-datepicker": "^4.16.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.45.4",
     "react-icons": "^4.10.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-multi-date-picker": "^4.1.2",
@@ -48,7 +50,8 @@
     "select-pure": "^2.1.4",
     "styled-components": "^5.3.0",
     "swiper": "^10.0.4",
-    "tailwindcss": "^3.3.2"
+    "tailwindcss": "^3.3.2",
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "eslint": "8.43.0",

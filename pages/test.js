@@ -1,44 +1,58 @@
-// components/RangeSlider.js
+// pages/index.js
+
 import React, { useState } from 'react';
 
-const RangeSlider = () => {
-  const [sliderValue, setSliderValue] = useState([20, 37]);
+const TagsInput = () => {
+  const [tags, setTags] = useState([]);
+  const [inputValue, setInputValue] = useState('');
 
-  const handleChange = (event) => {
-    const newValue = [...sliderValue];
-    const handleIndex = event.target.dataset.handleIndex;
-    newValue[handleIndex] = parseInt(event.target.value);
-    setSliderValue(newValue);
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleInputKeyPress = (e) => {
+    if (e.key === 'Enter' && inputValue.trim() !== '') {
+      setTags([...tags, inputValue.trim()]);
+      setInputValue(''); // Clear the input field
+    }
+  };
+
+  const handleTagRemove = (tag) => {
+    const newTags = tags.filter((t) => t !== tag);
+    setTags(newTags);
   };
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={sliderValue[0]}
-        onChange={handleChange}
-        data-handle-index="0"
-        className="z-10 w-1/2 h-1 bg-gray-300 rounded-lg appearance-none"
-      />
-      <input
-        type="range"
-        min="0"
-        max="100"
-        value={sliderValue[1]}
-        onChange={handleChange}
-        data-handle-index="1"
-        className="z-10 w-1/2 h-1 bg-gray-300 rounded-lg appearance-none"
-      />
-      <div className="absolute left-0 transform -translate-y-1/2 top-1/2">
-        {sliderValue[0]}
+    <div>
+      <div className="mb-4">
+        <input
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          onKeyPress={handleInputKeyPress}
+          placeholder="Enter a tag and press Enter"
+          className="px-4 py-2 border rounded-md"
+        />
       </div>
-      <div className="absolute right-0 transform -translate-y-1/2 top-1/2">
-        {sliderValue[1]}
+      <div>
+        {tags.map((tag, index) => (
+          <span key={index} className="inline-flex items-center px-2 py-1 m-1 text-white bg-blue-500 rounded-md">
+            {tag}
+            <button onClick={() => handleTagRemove(tag)} className="px-2 py-1 ml-2 text-white bg-red-500 rounded-md">
+              Remove
+            </button>
+          </span>
+        ))}
       </div>
     </div>
   );
 };
 
-export default RangeSlider;
+export default function Home() {
+  return (
+    <div className="container p-4 mx-auto">
+      <h1 className="mb-4 text-2xl font-semibold">Tags Input Example with Tailwind CSS</h1>
+      <TagsInput />
+    </div>
+  );
+}

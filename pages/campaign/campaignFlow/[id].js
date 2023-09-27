@@ -11,6 +11,10 @@ import { Select } from "chakra-react-select";
 import CustomSelectTag from "../../../component/CustomSelectTag";
 
 const CampaignFlow = () => {
+useEffect(()=>{
+
+},[])
+
   const router = useRouter();
   const [flow, setFlow] = useState();
   const [data, setData] = useState();
@@ -41,13 +45,13 @@ const CampaignFlow = () => {
         .then((response) => {
           if (response?.data?.data?.before_item_flow) {
             setFlow(JSON.parse(response?.data?.data?.before_item_flow));
-              }
-            localStorage.setItem(
-              "campaign-type",
-              response?.data?.data?.type_mode
-            );
-            console.log("flowww", response.data.data);
-      
+          }
+          localStorage.setItem(
+            "campaign-type",
+            response?.data?.data?.type_mode
+          );
+          
+          console.log("flowww", response.data.data);
         });
     }
   }, [router.query]);
@@ -247,6 +251,7 @@ const CampaignFlow = () => {
                                   <CustomSelectTag
                                     options={arr2}
                                     onChange={(e) => handleSentSelect(e)}
+                                    
                                   />
                                 </div>
                               </div>

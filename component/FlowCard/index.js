@@ -1,7 +1,10 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { formatNumber } from "../../helper/formatNumber";
+import { useFarsi } from "../../helper/useFarsiDigits";
 
 const FlowCard = ({ data, mainId, setStep, index, length }) => {
+  console.log("cardsss", data);
   const [selectedCardId, setSelectedCardId] = useState(null);
   const [activeCard, setActiveCard] = useState(false);
   const router = useRouter();
@@ -19,12 +22,13 @@ const FlowCard = ({ data, mainId, setStep, index, length }) => {
     }
   }, [data]);
 
-  const handleSelect = (cardId) => {
+  const handleSelect = (cardId, price) => {
     setSelectedCardId(cardId);
     localStorage.setItem(
       `Selected card ID (${step})`,
       JSON.stringify(`${mainId.id}:${cardId}`)
     );
+
     setLocalData(
       JSON.parse(localStorage.getItem(`Selected card ID (${step})`))
     );
@@ -57,8 +61,13 @@ const FlowCard = ({ data, mainId, setStep, index, length }) => {
       >
         <img className="!w-[100px] !h-[100px]" src={parsedData.img} />
         <h3 className="w-full py-4 text-center">{parsedData.name}</h3>
+        <p className="flex flex-row items-center justify-center w-full gap-1 py-2 font-bold">
+          <span>قیمت</span>
+          <span>{useFarsi(parsedData.price)}</span>
+          <span>تومان</span>
+        </p>
         <button
-          onClick={() => handleSelect(card.cfo_id)}
+          onClick={() => handleSelect(card.cfo_id, parsedData.price)}
           className="bg-[#DC3545] py-2 px-4 w-full text-white"
         >
           انتخاب
@@ -92,8 +101,13 @@ const FlowCard = ({ data, mainId, setStep, index, length }) => {
           {parsedData?.description}
         </p>
         <div className="w-full pt-6">
+          <p className="flex flex-row items-center justify-center w-full gap-1 py-2 font-bold">
+            <span>قیمت</span>
+            <span>{useFarsi(parsedData.price)}</span>
+            <span>تومان</span>
+          </p>
           <button
-            onClick={() => handleSelect(card.cfo_id)}
+            onClick={() => handleSelect(card.cfo_id, parsedData.price)}
             className="bg-[#DC3545] py-2 px-4 w-full text-white"
           >
             انتخاب

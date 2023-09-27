@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "antd";
 import { Button, Space } from "antd";
 import axios from "axios";
@@ -7,17 +7,12 @@ import { toast } from "react-toastify";
 import { Router, useRouter } from "next/router";
 import Loader from "../../component/loader";
 import { BiChevronDown } from "react-icons/bi";
-import Select from '../../component/CusotmSelect'
+import Select from "../../component/CusotmSelect";
 import CustomSelect from "../../component/CustomSelectTag";
+import { BeatLoader } from "react-spinners";
 
 const Signup = () => {
   const arr = [
-    {
-      parentId: 1,
-      id: 1,
-      label: "نوع کاربر خود را انتخاب کنید",
-      value: "نوع کاربر خود را انتخاب کنید",
-    },
     {
       parentId: 2,
       id: 2,
@@ -30,13 +25,7 @@ const Signup = () => {
       label: "ناشر تبلیغات",
       value: "ناشر تبلیغات",
     },
-    {
-      parentId: 4,
-      id: 4,
-      label: "هردو",
-      value: "هردو",
-    }
-  ]
+  ];
   const router = useRouter();
   const [userRole, setUserRole] = useState("");
   const [name, setName] = useState("");
@@ -46,48 +35,50 @@ const Signup = () => {
   const [pass, setPass] = useState("");
   const [repeatpass, setRepeatPass] = useState("");
   const [loading, setLoading] = useState();
-
+  useEffect(() => {
+    if (localStorage.getItem("user_Role")) {
+      localStorage.removeItem("user_Role");
+    }
+  }, []);
   const sendData = () => {
-    setLoading(true);
+    if (localStorage.getItem("user_Role")) {
+      setLoading(true);
 
-    axios
-      .post(`${process.env.NEXT_PUBLIC_MAIN_URL}users/sign-up`, {
-        first_name: name,
-        last_name: lname,
-        username: phone,
-        email: mail,
-        password: pass,
-        uac: userRole,
-      })
-      .then((response) => {
-        if (response.data.success === true) {
-          setLoading(false);
+      axios
+        .post(`${process.env.NEXT_PUBLIC_MAIN_URL}users/sign-up`, {
+          first_name: name,
+          last_name: lname,
+          username: phone,
+          email: mail,
+          password: pass,
+          uac: userRole,
+        })
+        .then((response) => {
+          if (response.data.success === true) {
+            setLoading(false);
 
-          toast.success(response.data.msg);
-          console.log(response.data);
-          router.push({
-            pathname: "/login/LoginOtp",
-            query: { phone: response.data.phone },
-          });
-        } else {
+            toast.success(response.data.msg);
+            console.log(response.data);
+            router.push({
+              pathname: "/login/LoginOtp",
+              query: { phone: response.data.phone },
+            });
+          } else {
+            setLoading(false);
+            toast.error(response.data.msg);
+          }
           setLoading(false);
-          toast.error(response.data.msg);
-        }
-        setLoading(false);
-      });
+        });
+    } else {
+      toast.warning("نوع کاربر را انتخاب کنید");
+    }
   };
   const handleSentSelect = (e) => {
-    console.log(e);
-   };
+    localStorage.setItem("user_Role", JSON.parse(e.target.value).id);
+  };
   return (
     <>
-      {loading ? (
-        <div className="w-full h-screen ">
-          <div className="absolute z-40 top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]">
-            <Loader />
-          </div>
-        </div>
-      ) : (
+ 
         <div className="max-w-[90rem] mx-auto md:p-10">
           <div
             className="grid grid-cols-12 border rounded-[8px] !h-[66rem] mt-10  md:!h-auto md:py-4"
@@ -200,28 +191,14 @@ const Signup = () => {
                 </div>
 
                 <div className="w-full mt-4">
-
                   <label>نوع کاربر</label>
                   <div className="bg-white text-[#BFBFBF] border border-gray-300 rounded-[2px] w-full">
-
-                  <CustomSelect options={arr} onChange={(e) => handleSentSelect(e)}/>
+                    <CustomSelect
+                      options={arr}
+                      onChange={(e) => handleSentSelect(e)}
+                      label={"نوع کاربر خود را انتخاب کنید"}
+                    />
                   </div>
-
-              
-                  {/* <select
-                    value={userRole}
-                    className="bg-white text-[#BFBFBF] border border-gray-300 rounded-[2px] p-[.6rem] w-full"
-                    onChange={(e) => {
-                      setUserRole(e.target.value);
-                    }}
-                  >
-                    <option className="!text-gray-100 ">
-                      نوع کاربر خود را انتخاب کنید
-                    </option>
-                    <option value="1">تبلیغ دهنده</option>
-                    <option value="2">ناشر تبلیغات</option>
-                    <option value="3">هردو</option>
-                  </select> */}
                 </div>
 
                 <div className="w-full mt-4">
@@ -233,7 +210,11 @@ const Signup = () => {
                     }}
                     onClick={sendData}
                   >
-                    <p className="font-thin text-white">ورود/ثبت نام</p>
+                  {loading ? (
+                    <BeatLoader color="#ffffff" />
+                    ) : (
+                      <p className="text-white">ورود/ثبت نام</p>
+                    )}
                   </Button>
                 </div>
 
@@ -281,7 +262,7 @@ const Signup = () => {
             </div>
           </div>
         </div>
-      )}
+      
     </>
   );
 };

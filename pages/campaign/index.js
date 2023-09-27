@@ -23,10 +23,15 @@ const Campaign = () => {
 
   const removeLocalStorageDataExceptToken = () => {
     const tokenKey = "token";
+    const userRoleKey = "user_Role";
     const token = localStorage.getItem(tokenKey); // Get the token
+    const userRole = localStorage.getItem(userRoleKey); // Get the token
 
     for (let key in localStorage) {
       if (key !== tokenKey) {
+        localStorage.removeItem(key); // Remove items except the token
+      }
+      if (key !== userRoleKey) {
         localStorage.removeItem(key); // Remove items except the token
       }
     }
@@ -34,6 +39,9 @@ const Campaign = () => {
     // Set the token back after clearing other items
     if (token) {
       localStorage.setItem(tokenKey, token);
+    }
+    if (userRole) {
+      localStorage.setItem(userRoleKey, userRole);
     }
   };
 

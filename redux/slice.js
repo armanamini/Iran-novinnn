@@ -2,8 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   textareaValue: '',
+  typeId:'',
+  parentId:'',
   linkValue: '',
   fileValue: '',
+  currentID:'',
+  startDate:'',
+  endDate:'',
   ProductUsageValue: '',
   mentionValue: '',
   hashtagValue: '',
@@ -22,7 +27,11 @@ const inputSlice = createSlice({
   initialState,
   reducers: {
     updateTextareaValue: (state, action) => {
-      state.textareaValue = action.payload;
+      const { typeId, value,parentId ,currentID} = action.payload;
+      state.textareaValue = value;
+      state.typeId = typeId;
+      state.parentId = parentId;
+      state.currentID = currentID;
     },
     updatetotalPriceOfItemsValue:(state, action)=>{
       state.totalPriceOfItemsValue = action.payload;
@@ -51,11 +60,15 @@ const inputSlice = createSlice({
     updateSuggestionValue: (state, action) => {
       state.suggestionValue = action.payload;
     },
+    
     updateCampaignNameValue: (state, action) => {
       state.campaignNameValue = action.payload;
     },
+
     updateCampaignStartTimeValue: (state, action) => {
-      state.campaignStartTimeValue = action.payload;
+      const {startDate,endDate} = action.payload;
+      state.startDate = startDate
+      state.endDate = endDate
     },
     updateCampaignEndTimeValue: (state, action) => {
       state.campaignEndTimeValue = action.payload;

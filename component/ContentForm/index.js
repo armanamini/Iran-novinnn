@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Provider, useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import Input from "../../core/component/Input/Input";
-import persian from "react-date-object/calendars/persian";
 import persian_fa from "react-date-object/locales/persian_fa";
+import persian from "react-date-object/calendars/persian";
+import transition from "react-element-popper/animations/transition";
+import opacity from "react-element-popper/animations/opacity";
 import {
   updateTextareaValue,
   updateLinkValue,
@@ -19,46 +21,59 @@ import {
   updateCampaignEndTimeValue,
   updatePublicationNotesValue,
 } from "../../redux/slice";
-import DatePicker from "react-multi-date-picker";
 import "moment/locale/fa";
 import axios from "axios";
+import InstagramPostTemplate from "../instagramPostTemplate";
+import DatePicker from "react-multi-date-picker";
 
-const ContentForm = (props) => {
+const ContentForm = ({ customForm, banner, selectedBanner }) => {
   const [data, setData] = useState();
+  const [form, setForm] = useState();
+  const [validate, setValidate] = useState({
+    campaignName: null,
+    textArea: null,
+  });
   const router = useRouter();
   const [previewImage, setPreviewImage] = useState("");
 
   useEffect(() => {
-    if (router.query.id) {
+    if (
+      router.query.id &&
+      JSON.parse(localStorage.getItem("campaign-type")) != 3
+    ) {
       axios
-        .get(
+        .post(
           `${process.env.NEXT_PUBLIC_MAIN_URL}campaign-type/custom-form?id=${router.query.id}&type_id=11`
         )
         .then((response) => {
-          if (response.data[0]?.options) {
-            setData(JSON.parse(response?.data[0]?.options));
-            console.log("why me ", JSON.parse(response.data[0]?.options));
+          if (response.data?.custom_form.options) {
+            setData(JSON.parse(response?.data?.custom_form.options));
+            setForm(response?.data.custom_form);
+
+            // console.log("why me ", JSON.parse(response?.data?.options));
           }
         });
     }
   }, [router.query]);
 
-  const datePickerRef = useRef();
-  const datePickerRefEnd = useRef();
   const textareaValue = useSelector((state) => state.input.textareaValue);
   const linkValue = useSelector((state) => state.input.linkValue);
   const fileValue = useSelector((state) => state.input.fileValue);
   const ProductUsageValue = useSelector(
     (state) => state.input.ProductUsageValue
   );
+  const [campaignNameValues, setCampaignNameValues] = useState([]);
+
   const mentionValue = useSelector((state) => state.input.mentionValue);
   const hashtagValue = useSelector((state) => state.input.hashtagValue);
   const shouldValue = useSelector((state) => state.input.shouldValue);
   const shouldNotValue = useSelector((state) => state.input.shouldNotValue);
   const suggestionValue = useSelector((state) => state.input.suggestionValue);
+
   const campaignNameValue = useSelector(
     (state) => state.input.campaignNameValue
   );
+
   const campaignStartTimeValue = useSelector(
     (state) => state.input.campaignStartTimeValue
   );
@@ -68,26 +83,56 @@ const ContentForm = (props) => {
   const publicationNotesValue = useSelector(
     (state) => state.input.publicationNotesValue
   );
+  useEffect(() => {
+    if (textareaValue.length > 0) {
+      setValidate((prev) => ({
+        ...prev,
+        textArea: true,
+      }));
+    } else {
+      setValidate((prev) => ({
+        ...prev,
+        textArea: false,
+      }));
+    }
+    if (campaignNameValue.length > 0) {
+      setValidate((prev) => ({
+        ...prev,
+        campaignName: true,
+      }));
+    } else {
+      setValidate((prev) => ({
+        ...prev,
+        campaignName: false,
+      }));
+    }
+  }, [textareaValue, campaignNameValue]);
 
   const dispatch = useDispatch();
+  const Campaign_type = JSON.parse(localStorage.getItem("campaign-type"));
 
-  const handleTextareaChange = (e) => {
-    dispatch(updateTextareaValue(e.target.value));
+  const handleTextareaChange = (e, formData) => {
+    const updatedFormData = {
+      parentId: form.id,
+      typeId: formData[0].type_id,
+      currentID: formData[0].cfo_id,
+      value: e.target.value,
+    };
+
+    dispatch(updateTextareaValue(updatedFormData));
   };
 
   const handleLinkChange = (e) => {
     dispatch(updateLinkValue(e.target.value));
   };
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0]; // Get the selected file
-    dispatch(updateFileValue(file));
-
-    if (file) {
-      // Update the preview image
-      setPreviewImage(URL.createObjectURL(file));
-    }
+  const handleFileChange = (event, identifier) => {
+    const file = event.target.files;
+    console.log("files", identifier);
+    // dispatch(updateFileValue({ identifier, file }));
+    selectedBanner(file);
   };
+
 
   const handleProductUsageChange = (e) => {
     dispatch(updateProductUsageValue(e.target.value));
@@ -112,17 +157,27 @@ const ContentForm = (props) => {
   const handleSuggestionChange = (e) => {
     dispatch(updateSuggestionValue(e.target.value));
   };
-
-  const handleCampaignNameChange = (e) => {
-    dispatch(updateCampaignNameValue(e.target.value));
+  const arr = [];
+  const handleCampaignNameChange = (e, index) => {
+    const updatedValues = [...campaignNameValues];
+    updatedValues[index] = e.target.value;
+    setCampaignNameValues(updatedValues);
+    arr.push(updatedValues[index]);
+    dispatch(updateCampaignNameValue(arr));
+    console.log("arr", arr);
   };
 
   const handleCampaignStartTimeChange = (e) => {
-    dispatch(
-      updateCampaignStartTimeValue(datePickerRef.current.childNodes[0].value)
-    );
-    console.log(datePickerRef.current.childNodes[0].value);
+    const startAndDate = {
+      startDate: e[0].format("YYYY/MM/DD"),
+      endDate: e[1]?.format("YYYY/MM/DD"),
+    };
+    dispatch(updateCampaignStartTimeValue(startAndDate));
+
+    console.log("start", e[0].format("YYYY/MM/DD"));
+    console.log("end", e[1]?.format("YYYY/MM/DD"));
   };
+
   const handleCampaignEndTimeChange = (e) => {
     dispatch(
       updateCampaignEndTimeValue(datePickerRefEnd.current.childNodes[0].value)
@@ -134,7 +189,39 @@ const ContentForm = (props) => {
   };
 
   // Parse the cfo_data into an array of objects
-  const parsedCfoData = data?.map((item) => JSON.parse(item?.cfo_data));
+  let parsedCfoData;
+  if (data?.length > 0) {
+    parsedCfoData = data?.map((item) => JSON.parse(item?.cfo_data));
+  } else {
+    parsedCfoData = customForm?.map((item) => JSON.parse(item?.cfo_data));
+  }
+  console.log("customForm", customForm);
+
+  useEffect(() => {
+    if (parsedCfoData) {
+      parsedCfoData.map((formData) => {
+        return formData.map((item) => {
+          if (getInputType(item.type_id) == "text area") {
+            setValidate((prev) => ({
+              ...prev,
+              textArea: item.requirement,
+            }));
+          }
+        });
+      });
+
+      parsedCfoData.map((formData) => {
+        return formData.map((item) => {
+          if (getInputType(item.type_id) == "text_input") {
+            setValidate((prev) => ({
+              ...prev,
+              campaignName: item.requirement,
+            }));
+          }
+        });
+      });
+    }
+  }, [data, customForm]);
 
   // Function to get the input type based on the type_id and token
   const getInputType = (typeId) => {
@@ -156,8 +243,6 @@ const ContentForm = (props) => {
       });
 
       const inputType3 = inputType2.map((itemData) => {
-        console.log("itemData", itemData);
-
         switch (itemData) {
           case "text_input":
             return (
@@ -165,13 +250,26 @@ const ContentForm = (props) => {
                 key={index}
                 type="easy"
                 label={formData[0].name}
-                classNameInput={`text-black w-full ltr text-end col-span-6`}
+                classNameInput={
+                  !validate.campaignName
+                    ? "text-black  w-full border rounded-[5px] ltr text-end"
+                    : "text-black  w-full border !border-red-500 rounded-[5px] ltr text-end"
+                }
                 classNameCard="!w-full"
-                className={`w-full text-black col-span-6`}
+                className={`w-full text-black`}
                 typeInput="text"
                 placeholder="توضیحات را وارد کنید"
-                value={campaignNameValue}
-                onChange={handleCampaignNameChange}
+                value={campaignNameValues[index]}
+                onChange={(e) => {
+                  // Add a unique identifier (e.g., field name or index) to the log statement
+                  console.log(`Field Index (${formData[0].name}):`, index);
+                  console.log(
+                    `New Value (${formData[0].name}):`,
+                    e.target.value
+                  );
+                  handleCampaignNameChange(e, index);
+                }}
+                required={formData.map((item) => item.requirement)}
               />
             );
 
@@ -189,36 +287,83 @@ const ContentForm = (props) => {
                 // onChange={/* Provide the relevant change handler */}
               />
             );
+
           case "text area":
-            console.log(formData.filter((item) => item.type_id == itemData));
             return (
               <>
                 <Input
+                  required={validate.textArea}
                   type="textarea"
                   label={formData.map((item) => item.name)}
-                  classNameInput="text-black  w-full border col-span-12 rounded-[2px] ltr text-end"
-                  className={"w-full col-span-12 text-black"}
+                  classNameInput={
+                    !validate.textArea
+                      ? "text-black  w-full border rounded-[5px] ltr text-end"
+                      : "text-black  w-full border !border-red-500 rounded-[5px] ltr text-end"
+                  }
+                  className={"w-full text-black"}
                   typeInput="text"
                   placeholder="توضیحات را وارد کنید"
                   value={textareaValue}
-                  onChange={handleTextareaChange}
+                  onChange={(e) => {
+                    handleTextareaChange(e, formData);
+                  }}
                 />
               </>
             );
+
           case "image_input":
             return (
               <>
+                <p>{formData.map((item) => item.name)}</p>
                 <Input
                   key={formData.id}
                   type="file"
                   label={formData.map((item) => item.name)}
-                  classNameInput="text-black  w-full border col-span-12 rounded-[2px] ltr text-end"
-                  className={"w-full col-span-12 text-black"}
+                  classNameInput="text-black  w-full border rounded-[2px] ltr text-end"
+                  className={"w-full text-black"}
                   typeInput="file"
                   placeholder="توضیحات را وارد کنید"
                   // value={fileValue}
-                  onChange={handleFileChange}
+                  onChange={(e) => handleFileChange(e, formData[0])}
+                  required={formData.map((item) => item.requirement)}
                 />
+              </>
+            );
+
+          case "date":
+            return (
+              <>
+                <div style={{ direction: "rtl" }} className="!w-full">
+                  <label>{formData.map((item) => item.name)}</label>
+                  <DatePicker
+                    required={formData.map((item) => item.requirement)}
+                    placeholder="تاریخ انتخاب کنید"
+                    style={{
+                      width: "100%",
+                      boxSizing: "border-box",
+                      padding: "18px 5px",
+                      borderRadius: "2px",
+                      borderColor: "#D9D9D9",
+                    }}
+                    containerStyle={{
+                      width: "100%",
+                    }}
+                    animations={[
+                      transition({
+                        from: 35,
+                        transition:
+                          "all 600ms cubic-bezier(0.335, 0.010, 0.030, 1.360)",
+                      }),
+                      opacity({ from: 0.1, to: 0.8, duration: 300 }),
+                    ]}
+                    locale={persian_fa}
+                    calendar={persian}
+                    range
+                    dateSeparator=" تا "
+                    format="YYYY/MM/DD"
+                    onChange={handleCampaignStartTimeChange}
+                  />
+                </div>
               </>
             );
           default:
@@ -230,37 +375,110 @@ const ContentForm = (props) => {
     });
   };
 
+  const [bannerImages, setBannerImages] = useState({});
+  const [selectedItems, setSelectedItems] = useState([]); // Create an array to store selected items
+  const [imageValues, setImageValues] = useState({});
+
+  const handleBannerImageChange = (e, itemId) => {
+    const file = e.target.files[0];
+    if (file) {
+      const updatedSelectedItems = [...selectedItems, file];
+      setSelectedItems(updatedSelectedItems);
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const imageData = event.target.result;
+        setBannerImages((prevImages) => ({
+          ...prevImages,
+          [itemId]: imageData,
+        }));
+
+        // Update the imageValues state with the image and its associated input value
+        setImageValues((prevValues) => ({
+          ...prevValues,
+          [itemId]: {
+            image: file,
+            cpc: prevValues[itemId] ? prevValues[itemId].cpc : "", // Preserve existing cpc value if it exists
+          },
+        }));
+    selectedBanner(imageValues)
+
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCPCChange = (e, itemId) => {
+    const cpcValue = e.target.value;
+    setImageValues((prevValues) => ({
+      ...prevValues,
+      [itemId]: {
+        ...prevValues[itemId],
+        cpc: cpcValue,
+      },
+    }));
+    selectedBanner(imageValues)
+    console.log("value cpc", imageValues);
+  };
+
   return (
-    <div
-      className="w-full p-10 bg-white rounded-[4px] relative"
-      style={{
-        boxShadow: "0px 4px 12px 0px rgba(0, 0, 0, 0.25)",
-      }}
-    >
-      {/* <Input
-        type="easy"
-        label={"نام کمپین"}
-        classNameInput={`text-black w-full ltr text-end col-span-6`}
-        classNameCard="!w-full"
-        className={`w-full text-black col-span-6`}
-        typeInput="text"
-        placeholder="توضیحات را وارد کنید"
-        value={campaignNameValue}
-        onChange={handleCampaignNameChange}
-      /> */}
-
+    <div className="w-full p-10 bg-white rounded-[4px] relative">
       {/* Render the dynamic form */}
-      <div className="grid grid-cols-12 gap-4">{renderDynamicForm()}</div>
-      {previewImage && (
-        <div className="pt-10"> 
+      <div className="flex flex-row gap-4">
+        <div className="flex flex-col w-full gap-4">{renderDynamicForm()}</div>
+        <div className="w-full">
+          {Campaign_type == "3" && (
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-10">
+              {banner &&
+                Object?.entries(banner)?.map(([itemId, item]) => (
+                  <div
+                    key={itemId}
+                    className={
+                      "w-[200px] h-[300px] flex flex-col items-center justify-center gap-4 border px-4 rounded-[10px] cursor-pointer"
+                    }
+                  >
+                    <input
+                      type="file"
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      id={`banner-input-${itemId}`}
+                      onChange={(e) => handleBannerImageChange(e, itemId)}
+                    />
+                    <label htmlFor={`banner-input-${itemId}`}>
+                      <img
+                        className="object-contain !w-[190px] !h-[290px] cursor-pointer"
+                        src={
+                          bannerImages[itemId]
+                            ? bannerImages[itemId]
+                            : `https://placehold.co/${item}`
+                        }
+                        alt={`Banner Item ${itemId}`}
+                      />
+                    </label>
+                    <div className="w-full border rounded-[4px] ">
+                      <input
+                        type="text"
+                        className="w-full"
+                        value={
+                          imageValues[itemId] ? imageValues[itemId].cpc : ""
+                        }
+                        onChange={(e) => handleCPCChange(e, itemId)}
+                        placeholder="CPC Value"
+                      />
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
 
-        <img
-          src={previewImage}
-          alt="Preview"
-          className="rounded-[10px] !w-[200px] !h-[200px]"
-        />
+          {Campaign_type == "2" && (
+            <InstagramPostTemplate
+              previewImage={previewImage}
+              textArea={textareaValue.value} // Use Formik values
+            />
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };
